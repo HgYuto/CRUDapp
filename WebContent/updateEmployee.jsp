@@ -9,11 +9,11 @@
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
 
-	<title>取引先マスター管理(追加)</title>
+	<title>取引先マスター管理(更新)</title>
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>取引先マスター管理画面(追加)</h1>
+<h1>取引先マスター管理画面(更新)</h1>
  <script>
  $(function() {
  $('input[name=doj]').datepicker();
@@ -23,21 +23,21 @@
 <table border=1>
  <thead>
  <tr>
- <th id="cust-code">取引先コード</th>
- <th id="cust-name">取引先名</th>
- <th id="url">URL</th>
- <th id="payment-site">支払いサイトコード</th>
+ <th>取引先コード</th>
+ <th>取引先名</th>
+ <th>URL</th>
+ <th>支払いサイトコード</th>
  </tr>
  </thead>
  <tbody>
  <tr>
- <td><input type="text" name="id" value="<c:out value="${employee.employeeId}" />" /> <br />
+ <td><input type="text" readonly="readonly" name="id" value="<c:out value="${employee.employeeId}" />" /> <br />
  </td>
  <td><input type="text" name="name" value="<c:out value="${employee.employeeName}" />" /> <br /></td>
  </tr>
  </tbody>
 </table>
-<p> <input type="Submit" value="追加"></p>
+<p> <input type="Submit" value="更新"></p>
  </form>
 </body>
 </html>
