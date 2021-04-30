@@ -19,7 +19,7 @@ public class DButil {
 			try {
 				//Properties prop = new Properties();
 
-				Class.forName("com.mysql.jdbc.Driver");
+				Class.forName("com.mysql.cj.jdbc.Driver");
 				// DBのコネクションとテーブル名、ユーザー名 、パスワード
 				connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/testdb", "root", "rootroot");
 

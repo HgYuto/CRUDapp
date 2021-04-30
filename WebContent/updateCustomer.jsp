@@ -19,25 +19,35 @@
  $('input[name=doj]').datepicker();
  });
  </script>
- <form method="POST" action='EmployeeServlet' name="frmAddEmployee">
-<table border=1>
+ <form action="/CRUDapp/CustomerController" method="POST" >
+<table id="cm">
  <thead>
  <tr>
- <th>取引先コード</th>
- <th>取引先名</th>
- <th>URL</th>
- <th>支払いサイトコード</th>
+ <th id="cust_code">取引先コード</th>
+ <th id="cust_name">取引先名</th>
+ <th id="url">URL</th>
+ <th id="payment_site">支払いサイト</th>
  </tr>
  </thead>
- <tbody>
+<tbody>
  <tr>
- <td><input type="text" readonly="readonly" name="id" value="<c:out value="${employee.employeeId}" />" /> <br />
+ <td>
+ <input type="text" value="${customer.custCode}" name="cust_code" size="11" <c:out value="${customer.custCode}" /> />
  </td>
- <td><input type="text" name="name" value="<c:out value="${employee.employeeName}" />" /> <br /></td>
+ <td>
+ <input type="text" value="${customer.custName}" name="cust_name" size="11" <c:out value="${customer.custName}" /> />
+</td>
+ <td>
+ <input type="text" value="${customer.url}" name="url" size="21" <c:out value="${customer.url}" /> />
+ </td>
+ <td>
+ <input type="text" value="${customer.paymentSite}" name="payment_site" size="19" <c:out value="${customer.paymentSite}" /> />
+</td>
  </tr>
  </tbody>
 </table>
-<p> <input type="Submit" value="更新"></p>
+<p id="decision"><input type="hidden" name="action" value="update"><input type="Submit" value="更新"></p>
+<p id="back"><input type="Submit" value="戻る"></p>
  </form>
 </body>
 </html>

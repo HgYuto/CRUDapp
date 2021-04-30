@@ -19,25 +19,37 @@
  $('input[name=doj]').datepicker();
  });
  </script>
- <form method="POST" action='EmployeeServlet' name="frmAddEmployee">
-<table border=1>
+ <form action="/CRUDapp/CustomerController" method="POST" >
+<table id="cm">
  <thead>
  <tr>
- <th id="cust-code">取引先コード</th>
- <th id="cust-name">取引先名</th>
+ <th id="cust_code">取引先コード</th>
+ <th id="cust_name">取引先名</th>
  <th id="url">URL</th>
- <th id="payment-site">支払いサイトコード</th>
+ <th id="payment_site">支払いサイト</th>
  </tr>
  </thead>
  <tbody>
  <tr>
- <td><input type="text" name="id" value="<c:out value="${employee.employeeId}" />" /> <br />
+ <td>
+ <input type="text" name="cust_code" size="11" <c:out value="${customer.custCode}" /> />
  </td>
- <td><input type="text" name="name" value="<c:out value="${employee.employeeName}" />" /> <br /></td>
+ <td>
+ <input type="text" name="cust_name" size="11" <c:out value="${customer.custName}" /> />
+</td>
+ <td>
+ <input type="text" name="url" size="21" <c:out value="${customer.Url}" /> />
+ </td>
+ <td>
+ <input type="text" name="payment_site" size="19" <c:out value="${customer.paymentSite}" /> />
+</td>
  </tr>
  </tbody>
 </table>
-<p> <input type="Submit" value="追加"></p>
+<p id="decision"><input type="Submit" value="追加"></p>
+<p id="back"><input type="Submit" value="戻る"></p>
+<!--以下データ保持用-->
+ <input type="hidden" name="action" value="insert">
  </form>
 </body>
 </html>

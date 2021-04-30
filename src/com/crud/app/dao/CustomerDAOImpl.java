@@ -9,14 +9,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crud.app.model.Employee;
+import com.crud.app.model.Customer;
 import com.crud.app.util.DButil;
 
-public class EmployeeDAOImpl implements EmployeeDAO {
+public class CustomerDAOImpl implements CustomerDAO {
 
 	Connection connection = null;
 
-	public EmployeeDAOImpl() throws FileNotFoundException, IOException {
+	public CustomerDAOImpl() throws FileNotFoundException, IOException {
 
 		try {
 			connection = DButil.getConnection();
@@ -25,19 +25,22 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			e.printStackTrace();
 		}
 
-		System.out.println("connectionnnection");
+		System.out.println("connection");
 	}
 
 	@Override
-	public void addEmployee(Employee employee) {
+	public void insertCustomer(Customer customer) {
 
 		try {
 
-			String sql = "INSERT INTO Employee(name) values ( ?)";
+			String sql = "INSERT INTO M_CUSTOMER(CUST_CODE,CUST_NAME,URL,PAYMENT_SITE) VALUES (? , ? , ? , ?) ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			//インデクス番号、値
-			pst.setString(1, employee.getEmployeeName());
+			pst.setString(1, customer.getCustCode());
+			pst.setString(2, customer.getCustName());
+			pst.setString(3, customer.getUrl());
+			pst.setString(4, customer.getPaymentSite());
 
 			int res = pst.executeUpdate();
 
@@ -51,15 +54,17 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public void updateEmployee(Employee employee) {
+	public void updateCustomer(Customer customer) {
 
 		try {
-			String sql = "UPDATE Employee SET NAME = ? WHERE id = ?";
+			String sql = "UPDATE M_CUSTOMER SET CUST_NAME = ? ,URL = ? ,PAYMENT_SITE = ? WHERE CUST_CODE = ? ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			//インデクス番号、値
-			pst.setString(1, employee.getEmployeeName());
-			pst.setLong(2, employee.getEmployeeId());
+			pst.setString(1, customer.getCustName());
+			pst.setString(2, customer.getUrl());
+			pst.setString(3, customer.getPaymentSite());
+			pst.setString(4,customer.getCustCode());
 
 			int res = pst.executeUpdate();
 
@@ -73,13 +78,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public void deleteEmployee(Employee employee) {
+	public void deleteCustomer(Customer customer) {
 
 		try {
 
-			String sql = "DELETE FROM Employee WHERE id = ? ";
+			String sql = "DELETE FROM M_CUSTOMER WHERE CUST_CODE = ? ;";
 			PreparedStatement pst = connection.prepareStatement(sql);
-			pst.setLong(1, employee.getEmployeeId());
+			pst.setString(1, customer.getCustCode());
 
 			int res = pst.executeUpdate();
 
@@ -93,26 +98,26 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public List<Employee> getAllEmployees() {
+	public List<Customer> getAllCustomers() {
 
-		List<Employee> employees = new ArrayList<Employee>();
+		List<Customer> customers = new ArrayList<Customer>();
 
 		try {
 
-			String sql = "SELECT * FROM Employee ";
-
+			String sql = "SELECT * FROM M_CUSTOMER ";
 			PreparedStatement pst = connection.prepareStatement(sql);
-
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
 
-				Employee employee = new Employee();
+				Customer customer = new Customer();
 				//インデクス番号、値
-				employee.setEmployeeId(rs.getLong(1));
-				employee.setEmployeeName(rs.getString(2));
+				customer.setCustCode(rs.getString(1));
+				customer.setCustName(rs.getString(2));
+				customer.setUrl(rs.getString(3));
+				customer.setPaymentSite(rs.getString(4));
 
-				employees.add(employee);
+				customers.add(customer);
 
 			}
 
@@ -120,27 +125,29 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			e.printStackTrace();
 		}
 
-		return employees;
+		return customers;
 	}
 
 	@Override
-	public Employee getEmployeeById(long id) {
+	public Customer getCustomerByCode(String cust_code) {
 
-		Employee employee = null;
+		Customer customer = null;
 
 		try {
 
-			String sql = "SELECT * FROM Employee WHERE id = ? ";
+			String sql = "SELECT * FROM M_CUSTOMER WHERE CUST_CODE = ? ";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
-			pst.setLong(1, id);
+			pst.setString(1, cust_code);
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
 
-				employee = new Employee();
-				employee.setEmployeeId(rs.getLong(1));
-				employee.setEmployeeName(rs.getString(2));
+				customer = new Customer();
+				customer.setCustCode(rs.getString(1));
+				customer.setCustName(rs.getString(2));
+				customer.setUrl(rs.getString(3));
+				customer.setPaymentSite(rs.getString(4));
 
 			}
 
@@ -148,7 +155,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			e.printStackTrace();
 		}
 
-		return employee;
+		return customer;
 	}
 
 }
