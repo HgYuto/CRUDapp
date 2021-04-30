@@ -14,7 +14,7 @@ public interface HanyoDAO {
 
 	List<Hanyo> getAllHanyos();
 
-	List<Hanyo> searchHanyos(Hanyo likeHanyo);
+	List<Hanyo> searchHanyos(Hanyo hanyo);
 
 	Hanyo getHanyoByCode(String hanyo_code);
 

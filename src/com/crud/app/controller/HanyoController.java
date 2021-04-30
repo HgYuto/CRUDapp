@@ -87,10 +87,13 @@ public class HanyoController extends HttpServlet {
 		request.setAttribute("hanyos", list);
 		view.forward(request, response);
 		}
-/*		if(test.equals("search")) {
-			hanyoDAO.searchHanyo(hanyo);
+		if(test.equals("search")) {
+			RequestDispatcher view = request.getRequestDispatcher("listHanyo.jsp");
+			List<Hanyo> list = hanyoDAO.searchHanyos(hanyo);
+			request.setAttribute("hanyos", list);
+			view.forward(request, response);
 		}
-*/
+
 	}
 
 }

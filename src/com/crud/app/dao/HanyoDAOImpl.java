@@ -128,44 +128,47 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 	@Override
 	public String decisionWhere(String sql) {
-		if(sql.contains("where")) {
-			return sql + "AND ";
+		if(sql.contains("WHERE")) {
+			return " AND ";
 		}else {
-			return sql + "Where ";
+			return "WHERE ";
 		}
 	}
 
 	@Override
-	public List<Hanyo> searchHanyos(Hanyo likeHanyo) {
+	public List<Hanyo> searchHanyos(Hanyo hanyo) {
 
 		List<Hanyo> hanyos = new ArrayList<Hanyo>();
 
 		try {
 			String sql = "SELECT * FROM M_HANYO ";
-			String hc = likeHanyo.getHanyoCode();
-			String vc = likeHanyo.getValueCode();
-			String vm = likeHanyo.getValueName();
-			String lh[][] = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vm}};
-			for(int i=0;lh[1][i].length() > 0;i++) {
-				if(lh[1][i].isEmpty()){
+			String hc = hanyo.getHanyoCode();
+			String vc = hanyo.getValueCode();
+			String vm = hanyo.getValueName();
+			String h[][] = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vm}};
+
+			for(int i = 0 ; h[1].length  > i ; i++ ) {
+				if(h[1][i].isEmpty()){
 					;
 				}
 				else {
-					sql += decisionWhere(sql)+lh[0][i]+ "=" +lh[1][i];
+					sql += decisionWhere(sql)+h[0][i]+ "= " +h[1][i];
 				}
 			}
 			sql +=";";
 			PreparedStatement pst = connection.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) {
-				Hanyo hanyo = new Hanyo();
 				//インデクス番号、値
-				hanyo.setHanyoCode(rs.getString(1));
-				hanyo.setValueCode(rs.getString(2));
-				hanyo.setValueName(rs.getString(3));
+				Hanyo hanyo1 = new Hanyo();
+				hanyo1.setHanyoCode(rs.getString(1));
+				hanyo1.setValueCode(rs.getString(2));
+				hanyo1.setValueName(rs.getString(3));
 
-				hanyos.add(hanyo);
-
+				hanyos.add(hanyo1);
+			}
+			if (!hanyos.isEmpty()) {
+				System.out.println("検索成功");
 			}
 
 		} catch (SQLException e) {
@@ -190,12 +193,10 @@ public class HanyoDAOImpl implements HanyoDAO {
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
-
 				hanyo = new Hanyo();
 				hanyo.setHanyoCode(rs.getString(1));
 				hanyo.setValueCode(rs.getString(2));
 				hanyo.setValueName(rs.getString(3));
-
 			}
 
 		} catch (SQLException e) {
