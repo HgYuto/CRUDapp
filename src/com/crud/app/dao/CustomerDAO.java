@@ -5,14 +5,19 @@ import java.util.List;
 import com.crud.app.model.Customer;
 
 public interface CustomerDAO {
+	boolean findCount(Customer customer);
 
-	void insertCustomer(Customer costomer);
+	String insertCustomer(Customer customer);
 
-	void updateCustomer(Customer costomer);
+	void updateCustomer(Customer customer);
 
-	void deleteCustomer(Customer costomer);
+	void deleteCustomer(Customer customer);
 
 	List<Customer> getAllCustomers();
+
+	String decisionWhere(String sql);
+
+	List<Customer> searchCustomers(Customer customer);
 
 	Customer getCustomerByCode(String cust_code);
 

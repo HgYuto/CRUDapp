@@ -5,92 +5,122 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link type="text/css" href="css/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
-	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<link type="text/css" href="css/style.css" rel="stylesheet" />
+	<link type="text/css" href="css/department.css" rel="stylesheet" />
+<!--<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
-
+-->
 	<title>部署マスター管理(更新)</title>
-	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>部署マスター管理画面(更新)</h1>
- <script>
- $(function() {
- $('input[name=doj]').datepicker();
- });
- </script>
- <form action="/CRUDapp/DepartmentController" method="POST" >
-<table id="dm">
+<script type="text/javascript">
+function clickBtn1(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","update");
+	return form.appendChild(ele);
+};
+
+function clickBtn2(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","list");
+	return form.appendChild(ele);
+};
+</script>
+ <form id= "form" action="/CRUDapp/DepartmentController" method="POST" >
+ <div id="f">
+ <h1>部署マスター管理画面(更新)</h1>
+ <table>
   <tr>
     <th>取引先コード</th>
      <td>
-      <input type="text" value="${department.custCode}" name="cust_code" size="11" <c:out value="${department.custCode}" /> />
+      <input type="text" value="${department.custCode}" name="cust_code" id="gray" size="15" readonly />
      </td>
   </tr>
   <tr>
   <th>部署コード</th>
      <td>
-      <input type="text" value="${department.deptCode}" name="dept_code" size="11" <c:out value="${department.deptCode}" /> />
+      <input type="text" value="${department.deptCode}" name="dept_code" size="35" <c:out value="${department.deptCode}" /> />
      </td>
   </tr>
   <tr>
    <th>部署名１</th>
      <td>
-      <input type="text" value="${department.deptName1}" name="dept_name1" size="21" <c:out value="${department.deptName1}" /> />
+      <input type="text" value="${department.deptName1}" name="dept_name1" size="35" <c:out value="${department.deptName1}" /> />
      </td>
   </tr>
   <tr>
    <th>部署名２</th>
      <td>
-       <input type="text" value="${department.deptName2}" name="dept_name2" size="19" <c:out value="${department.deptName2}" /> />
+       <input type="text" value="${department.deptName2}" name="dept_name2" size="35" <c:out value="${department.deptName2}" /> />
      </td>
   </tr>
   <tr>
    <th>郵便番号</th>
      <td>
-       <input type="text" value="${department.postCode}" name="post_code" size="11" <c:out value="${department.postCode}" /> />
+       <input type="text" value="${department.postCode}" name="post_code" size="25" <c:out value="${department.postCode}" /> />
      </td>
   </tr>
   <tr>
    <th>住所１</th>
      <td>
-       <input type="text" value="${department.address1}" name="address1" size="11" <c:out value="${department.address1}" /> />
+       <input type="text" value="${department.address1}" name="address1" size="45" <c:out value="${department.address1}" /> />
      </td>
   </tr>
   <tr>
    <th>住所２</th>
      <td>
-       <input type="text" value="${department.address2}" name="address2" size="21" <c:out value="${department.address2}" /> />
+       <input type="text" value="${department.address2}" name="address2" size="45" <c:out value="${department.address2}" /> />
      </td>
   </tr>
   <tr>
    <th>住所３</th>
      <td>
-       <input type="text" value="${department.address3}"  name="address3" size="19" <c:out value="${department.address3}" /> />
+       <input type="text" value="${department.address3}"  name="address3" size="45" <c:out value="${department.address3}" /> />
      </td>
   </tr>
   <tr>
    <th>電話番号</th>
      <td>
-       <input type="text" value="${department.tel}" name="tel" size="11" <c:out value="${department.tel}" /> />
+       <input type="text" value="${department.tel}" name="tel" size="25" <c:out value="${department.tel}" /> />
      </td>
   </tr>
   <tr>
    <th>担当者</th>
      <td>
-       <input type="text" value="${department.chargeName}" name="charge_name" size="11" <c:out value="${department.chargeName}" /> />
+       <input type="text" value="${department.chargeName}" name="charge_name" size="25" <c:out value="${department.chargeName}" /> />
      </td>
   </tr>
   <tr>
    <th>メールアドレス</th>
      <td>
-       <input type="text" value="${department.mail}" name="mail" size="21" <c:out value="${department.mail}" /> />
+       <input type="text" value="${department.mail}" name="mail" size="45" <c:out value="${department.mail}" /> />
      </td>
   </tr>
-</table>
+ </table>
+</div>
+<div id="b">
+<table>
+<tr>
+ <td>
+  <input type="submit" id="update" value="更新" onclick="clickBtn1()">
+ </td>
+  <td>
+  <input type="submit" id="list" value="戻る" onclick="clickBtn2()">
+ </td>
+</tr>
+<tr>
 
-<p id="dmBotan"><input type="hidden" name="action" value="update"><input type="Submit" value="更新"></p>
-<p id="dmBotan"><input type="hidden" name="action" value="list"><input type="Submit" value="戻る"></p>
- </form>
+</tr>
+</table>
+</div>
+</form>
+<script type="text/javascript" src="js/check.js"></script>
+<script type="text/javascript" src="js/updateCheck_department.js"></script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+body{
+	background-color: #ffefd5;
+}
+h1{
+	white-space : nowrap;
+	text-align: center;
+}
+#f,#b{
+	white-space : nowrap;
+	text-align : left;
+	margin: 0 auto;
+}
+div #b{
+	padding : 0px;
+}
+table #radio{
+	text-align: center;
+}
+table{
+	margin: 0 auto;
+}
+
+#gray{
+	background-color: silver;
+}
+
+#box #gray{
+	width:80px;
+	height:20px;
+}

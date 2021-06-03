@@ -56,15 +56,21 @@ public class HanyoDAOImpl implements HanyoDAO {
 	public void updateHanyo(Hanyo hanyo) {
 
 		try {
-			String sql = "UPDATE M_HANYO SET VALUE_CODE = ? ,VALUE_NAME = ? WHERE HANYO_CODE = ? ;";
+			String sql = "UPDATE M_HANYO ";
+			for(int i = 0 ; 3 > i ; i++) {
+				if(hanyoArraySet(hanyo,1,i).isEmpty()){
+					;
+				}else {
+					sql += decisionSet(sql) + hanyoArraySet(hanyo,0,i) + "= \"" + hanyoArraySet(hanyo,1,i) + "\"";
+				}
+			}
+			for(int i = 0 ; 3 > i ; i++) {
+				sql = hanyoWhere(sql,hanyo,2,i) ;
+			}
+
+			sql += ";";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
-			//インデクス番号、値
-			pst.setString(1,hanyo.getValueCode());
-			pst.setString(2, hanyo.getValueName());
-			pst.setString(3, hanyo.getHanyoCode());
-
-
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
@@ -81,9 +87,10 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 		try {
 
-			String sql = "DELETE FROM M_HANYO WHERE HANYO_CODE = ? ;";
+			String sql = "DELETE FROM M_HANYO WHERE HANYO_CODE = ? AND VALUE_CODE = ? ;";
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, hanyo.getHanyoCode());
+			pst.setString(2, hanyo.getValueCode());
 
 			int res = pst.executeUpdate();
 
@@ -131,7 +138,15 @@ public class HanyoDAOImpl implements HanyoDAO {
 		if(sql.contains("WHERE")) {
 			return " AND ";
 		}else {
-			return "WHERE ";
+			return " WHERE ";
+		}
+	}
+	@Override
+	public String decisionSet(String sql) {
+		if(sql.contains("SET")) {
+			return ",";
+		}else {
+			return "SET ";
 		}
 	}
 
@@ -142,20 +157,12 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 		try {
 			String sql = "SELECT * FROM M_HANYO ";
-			String hc = hanyo.getHanyoCode();
-			String vc = hanyo.getValueCode();
-			String vm = hanyo.getValueName();
-			String h[][] = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vm}};
-
-			for(int i = 0 ; h[1].length  > i ; i++ ) {
-				if(h[1][i].isEmpty()){
-					;
-				}
-				else {
-					sql += decisionWhere(sql)+h[0][i]+ "= " +h[1][i];
-				}
+			for(int i = 0 ; 2 > i ; i++) {
+				hanyoWhere(sql,hanyo,1,i);
 			}
-			sql +=";";
+
+			sql += ";";
+
 			PreparedStatement pst = connection.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) {
@@ -178,32 +185,63 @@ public class HanyoDAOImpl implements HanyoDAO {
 		return hanyos;
 	}
 
-
 	@Override
-	public Hanyo getHanyoByCode(String hanyo_code) {
+	public Hanyo getHanyoByCode(String hanyo_code,String value_code) {
 
 		Hanyo hanyo = null;
 
 		try {
+				String sql = "SELECT * FROM M_HANYO WHERE HANYO_CODE = ? AND VALUE_CODE = ? ";
 
-			String sql = "SELECT * FROM M_HANYO WHERE HANYO_CODE = ? ";
+				PreparedStatement pst = connection.prepareStatement(sql);
+				pst.setString(1, hanyo_code);
+				pst.setString(2, value_code);
+				ResultSet rs = pst.executeQuery();
 
-			PreparedStatement pst = connection.prepareStatement(sql);
-			pst.setString(1, hanyo_code);
-			ResultSet rs = pst.executeQuery();
+				while (rs.next()) {
+					hanyo = new Hanyo();
+					hanyo.setHanyoCode(rs.getString(1));
+					hanyo.setValueCode(rs.getString(2));
+					hanyo.setValueName(rs.getString(3));
+				}
 
-			while (rs.next()) {
-				hanyo = new Hanyo();
-				hanyo.setHanyoCode(rs.getString(1));
-				hanyo.setValueCode(rs.getString(2));
-				hanyo.setValueName(rs.getString(3));
-			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return hanyo;
+	}
+
+	@Override
+	public String hanyoArraySet(Hanyo hanyo,int i ,int k) {
+
+		String hc = hanyo.getHanyoCode();
+		String vc = hanyo.getValueCode();
+		String vn = hanyo.getValueName();
+
+		if(i == 1) {
+		String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn}};
+		return h[i][k];
+
+		}else {
+		String oldhc = hanyo.getOldHanyoCode();
+		String oldvc = hanyo.getOldValueCode();
+		String oldvn = hanyo.getOldValueName();
+		String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn},{oldhc,oldvc,oldvn}};
+		return h[i][k];
+		}
+	}
+
+	@Override
+	public String hanyoWhere(String sql,Hanyo hanyo,int i,int k) {
+			if(hanyoArraySet(hanyo,i,k).isEmpty()){
+				;
+			}else {
+				sql += decisionWhere(sql)+ hanyoArraySet(hanyo,0,k) + "= \"" + hanyoArraySet(hanyo,i,k) + "\"";
+			}
+
+		return sql;
 	}
 
 }

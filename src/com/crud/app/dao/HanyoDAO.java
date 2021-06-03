@@ -16,8 +16,14 @@ public interface HanyoDAO {
 
 	List<Hanyo> searchHanyos(Hanyo hanyo);
 
-	Hanyo getHanyoByCode(String hanyo_code);
+	Hanyo getHanyoByCode(String hanyo_code,String value_code);
 
 	String decisionWhere(String sql);
+
+	 String decisionSet(String sql);
+
+	String hanyoArraySet(Hanyo hanyo,int i ,int k);
+
+	String hanyoWhere(String sql,Hanyo hanyo,int i,int k);
 
 }

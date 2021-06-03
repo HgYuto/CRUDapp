@@ -6,43 +6,55 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link type="text/css" href="css/style.css" rel="stylesheet" />
+	<link type="text/css" href="css/hanyo.css" rel="stylesheet" />
 	<title>汎用コードマスター管理</title>
-	<link rel="stylesheet" href="style.css">
 </head>
 <body>
   <script>
   function jump(link){
 	let url = "HanyoController";
 	let para;
-	let para2 = getHanyoCode();
+	let para2 = getCode(0);
+	let para3 = "&valueCode=";
+	let para4 = getCode(1);
 	if(link== 1){
 		para = "?action=insertFace";
 		location.href = url + para;
 	}
 	if(link== 2){
 		para = "?action=updateFace&hanyoCode=";
-		location.href = url + para + para2;
+		location.href = url + para + para2 + para3 + para4;
 	}
 	if(link== 3){
 		para = "?action=delete&hanyoCode=";
-		location.href = url + para + para2;
+		location.href = url + para + para2 + para3 + para4;
+	}
+	if(link== 4){
+		url = "CustomerController";
+		para = "?action=face";
+		location.href = url + para;
 	}
   }
-  function getHanyoCode(){
+  function getCode(num){
   	let hanyoCodes = document.getElementsByName("code");
-  	let len = hanyoCodes.length;
+  	let valueCodes = document.getElementsByName("valueCode");
   	let hanyoCode = '';
-  	for(let i = 0;i < len; i++){
+  	let valueCode = '';
+  	for(let i = 0;i < hanyoCodes.length; i++){
   		if(hanyoCodes.item(i).checked){
   			hanyoCode = hanyoCodes.item(i).value;
+  			valueCode = valueCodes.item(i).value;
   		}
   	}
-  	return hanyoCode;
+  	let code=[hanyoCode,valueCode];
+  	return code[num];
   }
 </script>
- <h1>汎用コードマスター管理画面</h1>
  <form action="/CRUDapp/HanyoController" method="POST" >
- <table id="hySearch">
+ <div id="f">
+ <h1>汎用コードマスター管理画面</h1>
+ <table>
   <tr>
    <th>汎用コード</th>
    <th>値コード</th>
@@ -50,23 +62,23 @@
   </tr>
   <tr>
     <td>
-      <input type="text" name="hanyo_code" size="11" <c:out value="${hanyo.hanyoCode}" /> />
+      <input type="text" name="hanyo_code" size="18" <c:out value="${hanyo.hanyoCode}" /> />
     </td>
     <td>
-      <input type="text" name="value_code" size="11" <c:out value="${hanyo.valueCode}" /> />
+      <input type="text" name="value_code" size="18" <c:out value="${hanyo.valueCode}" /> />
     </td>
     <td>
-      <input type="text" name="value_name" size="21" <c:out value="${hanyo.valueName}" /> />
+      <input type="text" name="value_name" size="18" <c:out value="${hanyo.valueName}" /> />
     </td>
     <td>
       <button type="Submit" name="action" value="search">検索</button>
     </td>
   </tr>
  </table>
+ </div>
  </form>
-
- <div id="hyFace">
- <table>
+ <div id="hScroll">
+ <table id="hanT">
  <thead>
   <tr>
    <th id="hyCheck"></th>
@@ -78,8 +90,9 @@
  <tbody>
  <c:forEach items="${hanyos}" var="hanyo">
  <tr>
-  <td>
-   <input type="radio" name="code" value="${hanyo.hanyoCode}"/>
+  <td id="radio">
+   <input type="radio" name="code" value="${hanyo.hanyoCode}" />
+   <input type="hidden" name="valueCode" value="${hanyo.valueCode}"/>
   </td>
   <td>
    <c:out value="${hanyo.hanyoCode}"/>
@@ -95,11 +108,12 @@
  </tbody>
 </table>
 </div>
-<table id="dmBotan">
+<table id="b">
   <tr>
    <td><input type="button" value="追加" onclick="jump(1)"/></td>
    <td><input type="button" value="更新" onclick="jump(2)"/></td>
    <td><input type="button" value="削除" onclick="jump(3)"/></td>
+   <td><input type="button" value="戻る" onclick="jump(4)"/></td>
   </tr>
 </table>
 </body>

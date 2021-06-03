@@ -133,7 +133,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 				department.setDeptName2(rs.getString(4));
 				department.setPostCode(rs.getString(5));
 				department.setAddress1(rs.getString(6));
-				department.setAddress1(rs.getString(7));
+				department.setAddress2(rs.getString(7));
 				department.setAddress3(rs.getString(8));
 				department.setTel(rs.getString(9));
 				department.setChargeName(rs.getString(10));
@@ -151,7 +151,78 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 	}
 
 	@Override
-	public Department getDepartmentByCode(String cust_code2) {
+	public String decisionWhere(String sql) {
+		if(sql.contains("WHERE")) {
+			return " AND ";
+		}else {
+			return " WHERE ";
+		}
+	}
+
+	@Override
+	public List<Department> searchDepartments(Department department) {
+
+		List<Department> departments = new ArrayList<Department>();
+
+		try {
+			String sql = "SELECT * FROM M_DEPARTMENT ";
+
+			String cc = department.getCustCode();
+			String dc = department.getDeptCode();
+			String dn1 = department.getDeptName1();
+			String dn2 = department.getDeptName2();
+			String pc = department.getPostCode();
+			String a1 = department.getAddress1();
+			String a2 = department.getAddress2();
+			String a3 = department.getAddress3();
+			String tl = department.getTel();
+			String cn = department.getChargeName();
+			String ml = department.getMail();
+
+
+			String[][] sArray = {{"CUST_CODE ","DEPT_CODE ","DEPT_NAME1 ","DEPT_NAME2 ","POST_CODE ","ADDRESS1 ","ADDRESS2 ","ADDRESS3 ","TEL ","CHARGE_NAME ","MAIL "},{cc,dc,dn1,dn2,pc,a1,a2,a3,tl,cn,ml}};
+			for(int i = 0 ; sArray[1].length > i ; i++) {
+				if(sArray[1][i].isEmpty()){
+					;
+				}
+				else {
+					sql += decisionWhere(sql)+ sArray[0][i] + "= \"" + sArray[1][i] + "\"";
+				}
+			}
+
+			sql += ";";
+
+			PreparedStatement pst = connection.prepareStatement(sql);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()) {
+				//インデクス番号、値
+				Department departmentCol = new Department();
+				departmentCol.setCustCode(rs.getString(1));
+				departmentCol.setDeptCode(rs.getString(2));
+				departmentCol.setDeptName1(rs.getString(3));
+				departmentCol.setDeptName2(rs.getString(4));
+				departmentCol.setPostCode(rs.getString(5));
+				departmentCol.setAddress1(rs.getString(6));
+				departmentCol.setAddress2(rs.getString(7));
+				departmentCol.setAddress3(rs.getString(8));
+				departmentCol.setTel(rs.getString(9));
+				departmentCol.setChargeName(rs.getString(10));
+				departmentCol.setMail(rs.getString(11));
+
+				departments.add(departmentCol);
+			}
+			if (!departments.isEmpty()) {
+				System.out.println("検索成功");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return departments;
+	}
+	@Override
+	public Department getDepartmentByCode(String cust_code) {
 
 		Department department = null;
 
@@ -160,7 +231,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 			String sql = "SELECT * FROM M_DEPARTMENT WHERE CUST_CODE = ? ";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
-			pst.setString(1, cust_code2);
+			pst.setString(1, cust_code);
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {

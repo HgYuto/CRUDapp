@@ -14,6 +14,10 @@ public interface DepartmentDAO {
 
 	List<Department> getAllDepartments();
 
-	Department getDepartmentByCode(String cust_code2);
+	String decisionWhere(String sql);
+
+	List<Department> searchDepartments(Department department);
+
+	Department getDepartmentByCode(String cust_code);
 
 }

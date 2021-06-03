@@ -6,6 +6,10 @@ public class Hanyo {
           private String valueCode;
           private String valueName;
 
+          private String oldHanyoCode;
+          private String oldValueCode;
+          private String oldValueName;
+
           public Hanyo() {
           }
 
@@ -35,5 +39,25 @@ public class Hanyo {
             public void setValueName(String valueName) {
                    this.valueName = valueName;
             }
+            public String getOldHanyoCode() {
+                return this.oldHanyoCode;
+           }
+          public void setOldHanyoCode(String oldHanyoCode) {
+                this.oldHanyoCode = oldHanyoCode;
+           }
+
+          public String getOldValueCode() {
+              return this.oldValueCode;
+          	}
+          public void setOldValueCode(String oldValueCode) {
+              this.oldValueCode = oldValueCode;
+          	}
+
+            public String getOldValueName() {
+                  return this.oldValueName;
+           }
+           public void setOldValueName(String oldValueName) {
+                  this.oldValueName = oldValueName;
+           }
 
 }

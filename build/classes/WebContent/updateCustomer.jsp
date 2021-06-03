@@ -5,49 +5,77 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link type="text/css" href="css/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
-	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
-
+	<link type="text/css" href="css/style.css" rel="stylesheet" />
 	<title>取引先マスター管理(更新)</title>
-	<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<script type="text/javascript">
+function clickBtn1(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","update");
+	return form.appendChild(ele);
+};
+
+function clickBtn2(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","list");
+	return form.appendChild(ele);
+};
+</script>
+<form id="form" action="/CRUDapp/CustomerController" method="POST" onsubmit = "check_data()">
+<div id="f">
 <h1>取引先マスター管理画面(更新)</h1>
- <script>
- $(function() {
- $('input[name=doj]').datepicker();
- });
- </script>
- <form action="/CRUDapp/CustomerController" method="POST" >
-<table id="cm">
- <thead>
- <tr>
- <th id="cust_code">取引先コード</th>
- <th id="cust_name">取引先名</th>
- <th id="url">URL</th>
- <th id="payment_site">支払いサイト</th>
- </tr>
- </thead>
-<tbody>
- <tr>
- <td>
- <input type="text" value="${customer.custCode}" name="cust_code" size="11" <c:out value="${customer.custCode}" /> />
- </td>
- <td>
- <input type="text" value="${customer.custName}" name="cust_name" size="11" <c:out value="${customer.custName}" /> />
-</td>
- <td>
- <input type="text" value="${customer.url}" name="url" size="21" <c:out value="${customer.url}" /> />
- </td>
- <td>
- <input type="text" value="${customer.paymentSite}" name="payment_site" size="19" <c:out value="${customer.paymentSite}" /> />
-</td>
- </tr>
+<table>
+  <tr>
+    <th>取引先コード</th>
+     <td>
+      <input type="text" value="${customer.custCode}" name="cust_code" id="gray" size="15" readonly />
+     </td>
+  </tr>
+  <tr>
+  <th>取引先名</th>
+     <td>
+      <input type="text" value="${customer.custName}" name="cust_name" size="15" <c:out value="${customer.custName}" /> />
+     </td>
+  </tr>
+  <tr>
+   <th>URL</th>
+     <td>
+      <input type="text" value="${customer.url}" name="url" size="30" <c:out value="${customer.url}" /> />
+     </td>
+  </tr>
+  <tr>
+   <th>支払いサイト</th>
+     <td>
+       <input type="text" value="${customer.paymentSite}" name="payment_site" size="20" <c:out value="${customer.paymentSite}" /> />
+     </td>
+  </tr>
  </tbody>
 </table>
-<p id="decision"><input type="hidden" name="action" value="update"><input type="Submit" value="更新"></p>
-<p id="back"><input type="Submit" value="戻る"></p>
- </form>
+</div>
+<div id="b">
+<table>
+<tr>
+ <td>
+  <input type="submit" id="update" value="更新" onclick="clickBtn1()">
+ </td>
+ <td>
+  <input type="submit" id="list" value="戻る" onclick="clickBtn2()">
+ </td>
+</tr>
+<tr>
+
+</tr>
+</table>
+</div>
+</form>
+<script type="text/javascript" src="js/check.js"></script>
+<script type="text/javascript" src="js/updateCheck_customer.js"></script>
 </body>
 </html>
