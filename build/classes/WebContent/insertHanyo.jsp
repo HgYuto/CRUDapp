@@ -11,16 +11,7 @@
 </head>
 <body>
 <script type="text/javascript">
-function clickBtn1(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","insert");
-	return form.appendChild(ele);
-};
-
-function clickBtn2(){
+function backList(){
 	var form = document.getElementById("form");
 	var ele= document.createElement("input");
 	ele.setAttribute("type","hidden");
@@ -29,8 +20,9 @@ function clickBtn2(){
 	return form.appendChild(ele);
 };
 </script>
-<form id="form" action="/CRUDapp/HanyoController" method="POST" >
-<div id="hf1">
+
+<form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" >
+<div id="f">
 <h1>汎用コードマスター管理画面(追加)</h1>
 <table>
   <tr>
@@ -53,21 +45,25 @@ function clickBtn2(){
   </tr>
 </table>
 </div>
-<div id="hb2">
+<div id="b">
 <table>
 <tr>
  <td>
-  <input type="submit" id="insert" value="追加" onclick="clickBtn1()">
+  <input type="submit" id="insert" name="insert" value="追加" onclick="inputCheck()">
  </td>
   <td>
-  <input type="submit" id="list" value="戻る" onclick="clickBtn2()">
+  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
  </td>
-</tr>
-<tr>
-
 </tr>
 </table>
 </div>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
 </form>
 <script type="text/javascript" src="js/check.js"></script>
 <script type="text/javascript" src="js/inputCheck_hanyo.js"></script>

@@ -9,17 +9,9 @@
 	<link type="text/css" href="css/customer.css" rel="stylesheet" />
 	<title>取引先マスター管理(追加)</title>
 </head>
+<body>
 <script type="text/javascript">
-function clickBtn1(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","insert");
-	return form.appendChild(ele);
-};
-
-function clickBtn2(){
+function backList(){
 	var form = document.getElementById("form");
 	var ele= document.createElement("input");
 	ele.setAttribute("type","hidden");
@@ -28,8 +20,7 @@ function clickBtn2(){
 	return form.appendChild(ele);
 };
 </script>
-<body>
- <form id="form" action="/CRUDapp/CustomerController" method="POST" >
+ <form id="form" name="form" action="/CRUDapp/CustomerController" method="POST" >
  <div id="f">
  <h1>取引先マスター管理画面(追加)</h1>
 <table>
@@ -63,14 +54,18 @@ function clickBtn2(){
 <table>
 <tr>
  <td>
-  <input type="submit" name = "insert" value="追加" onclick="clickBtn1()">
+  <input type="submit" id="insert" name="insert" value="追加" onclick ="inputCheck()">
  </td>
   <td>
-  <input type="submit" name = "list" value="戻る" onclick="clickBtn2()">
+  <input type="submit" id="list" name="list" value="戻る" onclick ="backList()">
  </td>
 </tr>
+</table>
+</div>
+ <div id="b">
+<table>
 <tr>
- <td><c:out value="${customer.resurt}" /></td>
+ <td><span id="err">${result}</span></td>
 </tr>
 </table>
  </div>

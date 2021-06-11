@@ -1,0 +1,33 @@
+#ut{
+	border-collapse : collapse;
+	border : solid 1px black;
+	width : 700px;
+}
+
+table #ut,#ut th,#ut td{
+	border-collapse : collapse;
+	border : solid 1px black;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+	text-align: left;
+}
+
+table #radio{
+	text-align: center;
+}
+
+#uScroll{
+	overflow : scroll;
+	width : 700px;
+	height : 250px;
+	margin: 0 auto;
+}
+
+#ut thead{
+	background-color: #ffe4b5;
+}
+
+#ut tbody{
+	background-color: white;
+}

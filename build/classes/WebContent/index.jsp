@@ -12,7 +12,7 @@ pageEncoding="UTF-8"%>
 <script>
   function jump(link){
 	let url;
-	let para = "?action=list";
+	let para = "?action=firstList";
 	if(link == 1){
 		url = "CustomerController";
 		location.href = url + para;

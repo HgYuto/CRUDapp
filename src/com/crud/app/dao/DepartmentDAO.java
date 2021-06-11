@@ -6,6 +6,8 @@ import com.crud.app.model.Department;
 
 public interface DepartmentDAO {
 
+	int findCount(Department department);
+
 	void insertDepartment(Department department);
 
 	void updateDepartment(Department department);
@@ -18,6 +20,6 @@ public interface DepartmentDAO {
 
 	List<Department> searchDepartments(Department department);
 
-	Department getDepartmentByCode(String cust_code);
+	Department getDepartmentByCode(String cust_code, String dept_code);
 
 }

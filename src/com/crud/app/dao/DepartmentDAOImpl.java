@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +17,37 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 
 	Connection connection = null;
 
-	public DepartmentDAOImpl() throws FileNotFoundException, IOException {
+	public DepartmentDAOImpl() throws FileNotFoundException, IOException, SQLException {
 
 		try {
 			connection = DButil.getConnection();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException
-				| IOException e) {
-			e.printStackTrace();
-		}
 
-		System.out.println("connection");
+		}  catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+			e.printStackTrace();
+			System.out.println("unconnection");
+		}
 	}
+
+	//取引先コードが重複しているか確認。
+		@Override
+		public int findCount(Department department) {
+			try {
+				String sql = "SELECT COUNT(*) FROM M_DEPARTMENT MD WHERE MD.CUST_CODE = ? AND MD.DEPT_CODE = ? ;";
+
+				PreparedStatement pst = connection.prepareStatement(sql);
+				pst.setString(1, department.getCustCode());
+				pst.setString(2, department.getDeptCode());
+				ResultSet rs = pst.executeQuery();
+
+				rs.next();
+				return rs.getInt(1);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return -1;
+			}
+
+		}
 
 	@Override
 	public void insertDepartment(Department department) {
@@ -49,14 +70,27 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 			pst.setString(10, department.getChargeName());
 			pst.setString(11, department.getMail());
 
-			int res = pst.executeUpdate();
-
-			if (res > 0) {
-				System.out.println("入力完了");
+			if(findCount(department) > 0) {
+				department.setErrResult("取引先コードが重複しています。再度見直してください。");
 			}
-
-		} catch (SQLException e) {
+			else if(findCount(department) < 0) {
+				department.setErrResult("接続エラー：ネットワーク不良");
+			}
+			else {
+				int res = pst.executeUpdate();
+				if(res > 0) {
+					department.setErrResult("");
+					System.out.println("入力完了");
+				}
+			}
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
+			department.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			department.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -64,31 +98,38 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 	public void updateDepartment(Department department) {
 
 		try {
-			String sql = "UPDATE M_DEPARTMENT SET DEPT_CODE = ? ,DEPT_NAME1 = ? ,DEPT_NAME2 = ?,POST_CODE = ? ,ADDRESS1 = ?,ADDRESS2 = ?,ADDRESS3 = ?,TEL = ?,CHARGE_NAME = ?,MAIL = ? WHERE CUST_CODE = ? ;";
+			String sql = "UPDATE M_DEPARTMENT SET DEPT_NAME1 = ? ,DEPT_NAME2 = ?,POST_CODE = ? ,ADDRESS1 = ?,ADDRESS2 = ?,ADDRESS3 = ?,TEL = ?,CHARGE_NAME = ?,MAIL = ? WHERE CUST_CODE = ? AND DEPT_CODE = ? ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			//インデクス番号、値
-			pst.setString(1,department.getDeptCode());
-			pst.setString(2, department.getDeptName1());
-			pst.setString(3, department.getDeptName2());
-			pst.setString(4, department.getPostCode());
-			pst.setString(5, department.getAddress1());
-			pst.setString(6, department.getAddress2());
-			pst.setString(7, department.getAddress3());
-			pst.setString(8, department.getTel());
-			pst.setString(9, department.getChargeName());
-			pst.setString(10, department.getMail());
-			pst.setString(11, department.getCustCode());
+			pst.setString(1, department.getDeptName1());
+			pst.setString(2, department.getDeptName2());
+			pst.setString(3, department.getPostCode());
+			pst.setString(4, department.getAddress1());
+			pst.setString(5, department.getAddress2());
+			pst.setString(6, department.getAddress3());
+			pst.setString(7, department.getTel());
+			pst.setString(8, department.getChargeName());
+			pst.setString(9, department.getMail());
+			pst.setString(10, department.getCustCode());
+			pst.setString(11, department.getDeptCode());
 
 
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
+				department.setErrResult("");
 				System.out.println("更新成功");
 			}
 
-		} catch (SQLException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
+			department.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			department.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -97,17 +138,23 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 
 		try {
 
-			String sql = "DELETE FROM M_DEPARTMENT WHERE CUST_CODE = ? ;";
+			String sql = "DELETE FROM M_DEPARTMENT WHERE CUST_CODE = ? AND DEPT_CODE = ? ;";
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, department.getCustCode());
+			pst.setString(2, department.getDeptCode());
 
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
+				department.setErrResult("");
 				System.out.println("削除完了");
 			}
 
-		} catch (SQLException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -140,17 +187,17 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 				department.setMail(rs.getString(11));
 
 				departments.add(department);
-
+				department.setErrResult("");
 			}
-
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
 		}
-
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return departments;
 	}
 
-	@Override
 	public String decisionWhere(String sql) {
 		if(sql.contains("WHERE")) {
 			return " AND ";
@@ -211,27 +258,30 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 
 				departments.add(departmentCol);
 			}
-			if (!departments.isEmpty()) {
+				department.setErrResult("");
 				System.out.println("検索成功");
-			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return departments;
 	}
 	@Override
-	public Department getDepartmentByCode(String cust_code) {
+	public Department getDepartmentByCode(String cust_code,String dept_code) {
 
 		Department department = null;
 
 		try {
 
-			String sql = "SELECT * FROM M_DEPARTMENT WHERE CUST_CODE = ? ";
+			String sql = "SELECT * FROM M_DEPARTMENT WHERE CUST_CODE = ? AND DEPT_CODE = ? ";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, cust_code);
+			pst.setString(2, dept_code);
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
@@ -251,7 +301,10 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 
 			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 

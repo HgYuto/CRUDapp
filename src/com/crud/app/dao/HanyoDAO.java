@@ -6,6 +6,8 @@ import com.crud.app.model.Hanyo;
 
 public interface HanyoDAO {
 
+	int findCount(Hanyo hanyo);
+
 	void insertHanyo(Hanyo hanyo);
 
 	void updateHanyo(Hanyo hanyo);
@@ -22,8 +24,8 @@ public interface HanyoDAO {
 
 	 String decisionSet(String sql);
 
-	String hanyoArraySet(Hanyo hanyo,int i ,int k);
+	String hanyoArraySet(Hanyo hanyo, int i, int j);
 
-	String hanyoWhere(String sql,Hanyo hanyo,int i,int k);
+	String hanyoWhere(String sql, Hanyo hanyo, int i, int j);
 
 }

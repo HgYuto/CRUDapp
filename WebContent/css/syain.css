@@ -1,0 +1,31 @@
+#st{
+	border-collapse : collapse;
+	border : solid 1px black;
+	width : 700px;
+}
+
+table #st,#st th,#st td{
+	border-collapse : collapse;
+	border : solid 1px black;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+	text-align: left;
+}
+table #radio{
+	text-align: center;
+}
+#sScroll{
+	overflow : scroll;
+	width : 700px;
+	height : 250px;
+	margin: 0 auto;
+}
+
+#st thead{
+	background-color: #ffe4b5;
+}
+
+#st tbody{
+	background-color: white;
+}

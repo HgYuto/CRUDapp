@@ -5,9 +5,10 @@ import java.util.List;
 import com.crud.app.model.Customer;
 
 public interface CustomerDAO {
-	boolean findCount(Customer customer);
 
-	String insertCustomer(Customer customer);
+	int findCount(Customer customer);
+
+	void insertCustomer(Customer customer);
 
 	void updateCustomer(Customer customer);
 

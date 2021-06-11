@@ -1,0 +1,36 @@
+#url{
+	width : 150px;
+}
+
+#custT{
+	border-collapse : collapse;
+	border : solid 1px black;
+	width : 600px;
+}
+
+table #custT,#custT th,#custT td{
+	border-collapse : collapse;
+	border : solid 1px black;
+	white-space : nowrap;
+	text-align: left;
+}
+
+#omit{
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+}
+
+#cScroll{
+	overflow : scroll;
+	width : 600px;
+	height : 250px;
+	margin: 0 auto;
+}
+
+#custT thead{
+	background-color: #ffe4b5;
+}
+#custT tbody{
+	background-color: white;
+}

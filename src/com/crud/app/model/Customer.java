@@ -6,6 +6,7 @@ public class Customer {
           private String custName;
           private String url;
           private String paymentSite;
+          private String errResult;
 
           public Customer() {
           }
@@ -35,18 +36,26 @@ public class Customer {
 
             public String getUrl() {
                 return this.url;
-         }
+            }
 
-         public void setUrl(String url) {
+            public void setUrl(String url) {
                 this.url = url;
-         }
+            }
 
-         public String getPaymentSite() {
-             return this.paymentSite;
-        }
+            public String getPaymentSite() {
+            	return this.paymentSite;
+            }
 
-       public void setPaymentSite(String paymentSite) {
-             this.paymentSite = paymentSite;
-        }
+            public void setPaymentSite(String paymentSite) {
+            	this.paymentSite = paymentSite;
+            }
+
+            public String getErrResult() {
+            	return this.errResult;
+            }
+
+            public void setErrResult(String errResult) {
+            	this.errResult = errResult;
+            }
 
 }

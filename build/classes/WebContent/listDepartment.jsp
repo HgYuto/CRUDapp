@@ -13,44 +13,49 @@
 <body>
  <script>
   function jump(link){
-	let url;
+	let url = "DepartmentController";
 	let para;
-	let para1;
-	let para2;
+	let para1 = getCode(0);
+	let para2 = "&deptCode=";
+	let para3 = getCode(1);
 	if(link == 1){
-		url = "DepartmentController";
 		para = "?action=insertFace";
 		location.href = url + para;
 	}
 	if(link== 2){
-		url = "DepartmentController";
-		para1 = "?action=updateFace&custCode=";
-		para2 = getCustCode();
-		location.href = url + para1 + para2;
-		get
+		para = "?action=updateFace&code=";
+		if(getCode(0)==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1 + para2 + para3 ;
+		}
 	}
 	if(link== 3){
-		url = "DepartmentController";
-		para1 = "?action=delete&custCode=";
-		para2 = getCustCode();
-		location.href = url + para1 + para2;
+		para = "?action=delete&code=";
+		if(getCode(0)==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1 + para2 + para3 ;
+		}
 	}
 	if(link == 4){
-		url = "DepartmentController";
 		para = "?action=face";
 		location.href = url + para;
 	}
   }
-  function getCustCode(){
+  function getCode(num){
   	let custCodes = document.getElementsByName("code");
-  	let len = custCodes.length;
+  	let deptCodes = document.getElementsByName("deptCode");
   	let custCode = '';
-  	for(let i = 0;i < len; i++){
+  	let deptCode = '';
+  	for(let i = 0;i < custCodes.length; i++){
   		if(custCodes.item(i).checked){
   			custCode = custCodes.item(i).value;
+  			deptCode = deptCodes.item(i).value;
   		}
   	}
-  	return custCode;
+  	let code=[custCode,deptCode];
+  	return code[num];
   }
 </script>
  <form action="/CRUDapp/DepartmentController" method="POST" >
@@ -120,7 +125,7 @@
  <table id="deptT">
  <thead>
   <tr>
-   <th id="dmCheck"></th>
+   <th></th>
    <th id="cust_code">取引先コード</th>
    <th id="dept_code">部署コード</th>
    <th id="dept_name1">部署名１</th>
@@ -139,6 +144,7 @@
  <tr>
   <td id="radio">
    <input type="radio" name="code" value="${department.custCode}"/>
+    <input type="hidden" name="deptCode" value="${department.deptCode}"/>
   </td>
   <td>
    <c:out value="${department.custCode}"/>
@@ -186,5 +192,12 @@
    <td><input type="button" value="戻る" onclick="jump(4)"/></td>
   </tr>
 </table>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
 </body>
 </html>

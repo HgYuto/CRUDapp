@@ -13,20 +13,18 @@ public class DButil {
 	public static Connection getConnection() throws ClassNotFoundException, SQLException, InstantiationException,
 			IllegalAccessException, FileNotFoundException, IOException {
 
-		if (connection != null)
+		if (connection != null) {
 			return connection;
+		}
 		else {
 			try {
-				//Properties prop = new Properties();
-
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				// DBのコネクションとテーブル名、ユーザー名 、パスワード
 				connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/testdb", "root", "rootroot");
-
+				System.out.println("connection");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
+
 			}
 			return connection;
 		}

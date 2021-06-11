@@ -11,16 +11,7 @@
 </head>
 <body>
  <script>
- function clickBtn1(){
-		var form = document.getElementById("form");
-		var ele= document.createElement("input");
-		ele.setAttribute("type","hidden");
-		ele.setAttribute("name","action");
-		ele.setAttribute("value","insert");
-		return form.appendChild(ele);
-	};
-
-	function clickBtn2(){
+	function backList(){
 		var form = document.getElementById("form");
 		var ele= document.createElement("input");
 		ele.setAttribute("type","hidden");
@@ -30,7 +21,7 @@
 	};
  </script>
 
- <form id="form" action="/CRUDapp/DepartmentController" method="POST" >
+ <form id="form" name="form" action="/CRUDapp/DepartmentController" method="POST" >
 <div id="f">
 <h1>部署マスター管理画面(追加)</h1>
 <table>
@@ -107,10 +98,10 @@
 <table>
 <tr>
  <td>
-  <input type="submit" name="insert" value="追加" onclick="clickBtn1()">
+  <input type="submit" name="insert" value="追加" onclick="inputCheck()">
  </td>
   <td>
-  <input type="submit" name="list" value="戻る" onclick="clickBtn2()">
+  <input type="submit" name="list" value="戻る" onclick="backList()">
  </td>
 </tr>
 <tr>
@@ -118,6 +109,13 @@
 </tr>
 </table>
 </div>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
  </form>
 <script type="text/javascript" src="js/check.js"></script>
 <script type="text/javascript" src="js/inputCheck_department.js"></script>

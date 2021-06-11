@@ -10,16 +10,7 @@
 </head>
 <body>
 <script type="text/javascript">
-function clickBtn1(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","update");
-	return form.appendChild(ele);
-};
-
-function clickBtn2(){
+function backList(){
 	var form = document.getElementById("form");
 	var ele= document.createElement("input");
 	ele.setAttribute("type","hidden");
@@ -28,7 +19,7 @@ function clickBtn2(){
 	return form.appendChild(ele);
 };
 </script>
-<form id="form" action="/CRUDapp/CustomerController" method="POST" onsubmit = "check_data()">
+<form id="form" name="form" action="/CRUDapp/CustomerController" method="POST">
 <div id="f">
 <h1>取引先マスター管理画面(更新)</h1>
 <table>
@@ -63,17 +54,21 @@ function clickBtn2(){
 <table>
 <tr>
  <td>
-  <input type="submit" id="update" value="更新" onclick="clickBtn1()">
+  <input type="submit" id="update" name="update" value="更新" onclick="updateCheck()">
  </td>
  <td>
-  <input type="submit" id="list" value="戻る" onclick="clickBtn2()">
+  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
  </td>
-</tr>
-<tr>
-
 </tr>
 </table>
 </div>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
 </form>
 <script type="text/javascript" src="js/check.js"></script>
 <script type="text/javascript" src="js/updateCheck_customer.js"></script>

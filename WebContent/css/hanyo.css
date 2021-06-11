@@ -1,0 +1,30 @@
+#hanT{
+	border-collapse : collapse;
+	border : solid 1px black;
+	width : 600px;
+}
+
+table #hanT,#hanT th,#hanT td{
+	border-collapse : collapse;
+	border : solid 1px black;
+	white-space : nowrap;
+	text-align: left;
+}
+
+table #radio{
+	text-align: center;
+}
+
+#hScroll{
+	overflow : scroll;
+	width : 600px;
+	height : 300px;
+	margin: 0 auto;
+}
+
+#hanT thead{
+	background-color: #ffe4b5;
+}
+#hanT tbody{
+	background-color: white;
+}

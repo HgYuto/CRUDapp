@@ -15,20 +15,28 @@
   function jump(link){
 	let url = "HanyoController";
 	let para;
-	let para2 = getCode(0);
-	let para3 = "&valueCode=";
-	let para4 = getCode(1);
+	let para1 = getCode(0);
+	let para2 = "&valueCode=";
+	let para3 = getCode(1);
 	if(link== 1){
 		para = "?action=insertFace";
 		location.href = url + para;
 	}
 	if(link== 2){
 		para = "?action=updateFace&hanyoCode=";
-		location.href = url + para + para2 + para3 + para4;
+		if(getCode(0)==''&&getCode(1)==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1 + para2 + para3;
+		}
 	}
 	if(link== 3){
 		para = "?action=delete&hanyoCode=";
-		location.href = url + para + para2 + para3 + para4;
+		if(getCode(0)==''&&getCode(1)==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1 + para2 + para3;
+		}
 	}
 	if(link== 4){
 		url = "CustomerController";
@@ -37,8 +45,9 @@
 	}
   }
   function getCode(num){
-  	let hanyoCodes = document.getElementsByName("code");
+  	let hanyoCodes = document.getElementsByName("hanyoCode");
   	let valueCodes = document.getElementsByName("valueCode");
+  	let len = hanyoCodes.length;
   	let hanyoCode = '';
   	let valueCode = '';
   	for(let i = 0;i < hanyoCodes.length; i++){
@@ -81,7 +90,7 @@
  <table id="hanT">
  <thead>
   <tr>
-   <th id="hyCheck"></th>
+   <th></th>
    <th id="hanyo_code">汎用コード</th>
    <th id="value_code">値コード</th>
    <th id="value_name">値</th>
@@ -91,7 +100,7 @@
  <c:forEach items="${hanyos}" var="hanyo">
  <tr>
   <td id="radio">
-   <input type="radio" name="code" value="${hanyo.hanyoCode}" />
+   <input type="radio" name="hanyoCode" value="${hanyo.hanyoCode}" />
    <input type="hidden" name="valueCode" value="${hanyo.valueCode}"/>
   </td>
   <td>
@@ -116,5 +125,12 @@
    <td><input type="button" value="戻る" onclick="jump(4)"/></td>
   </tr>
 </table>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
 </body>
 </html>

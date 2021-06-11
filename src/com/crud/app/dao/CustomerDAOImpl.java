@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,21 +17,21 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	Connection connection = null;
 
-	public CustomerDAOImpl() throws FileNotFoundException, IOException {
+	public CustomerDAOImpl() throws FileNotFoundException, IOException,SQLException {
 
 		try {
 			connection = DButil.getConnection();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException
-				| IOException e) {
-			e.printStackTrace();
-		}
 
-		System.out.println("connection");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+			e.printStackTrace();
+			System.out.println("unconnection");
+
+		}
 	}
 
 	//取引先コードが重複しているか確認。
 	@Override
-	public boolean findCount(Customer customer) {
+	public int findCount(Customer customer) {
 		try {
 			String sql = "SELECT COUNT(*) FROM M_CUSTOMER MC WHERE MC.CUST_CODE = ? ;";
 
@@ -38,51 +39,66 @@ public class CustomerDAOImpl implements CustomerDAO {
 			pst.setString(1, customer.getCustCode());
 			ResultSet rs = pst.executeQuery();
 
-			if(rs.getInt(1) > 0) {
-				return false;
-			}else {
-				return true;
-			}
+			rs.next();
+			return rs.getInt(1);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 
 	}
 
 	@Override
-	public String insertCustomer(Customer customer) {
-		String result;
+	public void insertCustomer(Customer customer) {
+
 		try {
 
 			String sql = "INSERT INTO M_CUSTOMER(CUST_CODE,CUST_NAME,URL,PAYMENT_SITE) VALUES (? , ? , ? , ?) ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
+
 			//インデクス番号、値
 			pst.setString(1, customer.getCustCode());
 			pst.setString(2, customer.getCustName());
 			pst.setString(3, customer.getUrl());
 			pst.setString(4, customer.getPaymentSite());
 
-			if (pst ) {
-				if(findCount(customer)== true) {
-					int res = pst.executeUpdate();
-					System.out.println("入力完了");
-					return result = "";
-				}else {
-					return result = "取引先コードが重複しています。再度見直してください。";
-				}
+			if(findCount(customer) > 0) {
+				customer.setErrResult("取引先コードが重複しています。再度見直してください。");
+			}
+			else if(findCount(customer) < 0) {
+				customer.setErrResult("接続エラー：ネットワーク不良");
 			}
 			else {
-				return result = "接続エラー：ネットワーク不良";
+				int res = pst.executeUpdate();
+				if(res > 0) {
+					customer.setErrResult("");
+					System.out.println("入力完了");
+				}
 			}
+		}
+		catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+			customer.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			return result = "接続エラー：ネットワーク不良";
+			customer.setErrResult("接続エラー：ネットワーク不良");
 		}
-	}
+
+/*		finally {
+            try {
+                if (connection != null) {
+                    // データベースを切断
+                    connection.close();
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+		}
+*/	}
 
 	@Override
 	public void updateCustomer(Customer customer) {
@@ -95,16 +111,23 @@ public class CustomerDAOImpl implements CustomerDAO {
 			pst.setString(1, customer.getCustName());
 			pst.setString(2, customer.getUrl());
 			pst.setString(3, customer.getPaymentSite());
-			pst.setString(4,customer.getCustCode());
+			pst.setString(4, customer.getCustCode());
 
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
+				customer.setErrResult("");
 				System.out.println("更新成功");
 			}
 
-		} catch (SQLException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
+			customer.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			customer.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -120,10 +143,15 @@ public class CustomerDAOImpl implements CustomerDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
+				customer.setErrResult("");
 				System.out.println("削除完了");
 			}
 
-		} catch (SQLException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -149,17 +177,18 @@ public class CustomerDAOImpl implements CustomerDAO {
 				customer.setPaymentSite(rs.getString(4));
 
 				customers.add(customer);
-
 			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return customers;
 	}
 
-	@Override
 	public String decisionWhere(String sql) {
 		if(sql.contains("WHERE")) {
 			return " AND ";
@@ -205,11 +234,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 				customers.add(customerCol);
 			}
-			if (!customers.isEmpty()) {
+				customer.setErrResult("");
 				System.out.println("検索成功");
-			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -239,7 +270,10 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 

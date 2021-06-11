@@ -13,30 +13,30 @@
 <body>
   <script>
   function jump(link){
-	let url;
+	let url= "CustomerController";
 	let para;
-	let para1;
-	let para2;
+	let para1 = getCustCode();
 	if(link == 1){
-		url = "CustomerController";
 		para = "?action=insertFace";
 		location.href = url + para;
 	}
 	if(link== 2){
-		url = "CustomerController";
-		para1 = "?action=updateFace&custCode=";
-		para2 = getCustCode();
-		location.href = url + para1 + para2;
-		get
+		para = "?action=updateFace&custCode=";
+		if(getCustCode()==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1;
+		}
 	}
 	if(link== 3){
-		url = "CustomerController";
-		para1 = "?action=delete&custCode=";
-		para2 = getCustCode();
-		location.href = url + para1 + para2;
+		para = "?action=delete&custCode=";
+		if(getCustCode()==''){
+			window.alert("データを選択してください。");
+		}else{
+			location.href = url + para + para1;
+		}
 	}
 	if(link== 4){
-		url = "CustomerController";
 		para = "?action=face";
 		location.href = url + para;
 	}
@@ -119,11 +119,18 @@
 </div>
 <table id="b">
   <tr>
-   <td><input type="button" value="追加" onclick="jump(1)"></td>
-   <td><input type="button" value="更新" onclick="jump(2)"></td>
+   <td><input type="button" value="追加" onclick="jump(1)"/></td>
+   <td><input type="button" value="更新" onclick="jump(2)"/></td>
    <td><input type="button" value="削除" onclick="jump(3)"/></td>
    <td><input type="button" value="戻る" onclick="jump(4)"/></td>
   </tr>
 </table>
+ <div id="b">
+<table>
+<tr>
+ <td><span id="err">${result}</span></td>
+</tr>
+</table>
+ </div>
 </body>
 </html>

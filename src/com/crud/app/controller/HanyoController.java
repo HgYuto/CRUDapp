@@ -2,6 +2,7 @@ package com.crud.app.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -24,14 +25,20 @@ public class HanyoController extends HttpServlet {
 	private static String INDEX ="/index.jsp";
 
 	String forward;
-
+	String result;
 	HanyoDAO hanyoDAO;
+	Hanyo hanyo = new Hanyo();
 
 	public HanyoController() throws FileNotFoundException, IOException {
 
 		super();
-
-		hanyoDAO = new HanyoDAOImpl();
+		try {
+			hanyoDAO = new HanyoDAOImpl();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			hanyo.setErrResult("接続エラー：ネットワーク不良");
+		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,33 +50,38 @@ public class HanyoController extends HttpServlet {
 		if (action.equals("insertFace")) {
 			forward = INSERT_HANYO;
 		}
-		if (action.equals("updateFace")) {
-			forward = UPDATE_HANYO;
+		if (action.equals("updateFace")||action.equals("delete")) {
 			String hanyo_code = request.getParameter("hanyoCode");
 			String value_code = request.getParameter("valueCode");
-			Hanyo hanyo  = hanyoDAO.getHanyoByCode(hanyo_code,value_code);
-			request.setAttribute("hanyo", hanyo);
-
-		}
-		if (action.equals("list")|| action.equals("delete")) {
-			forward = LIST_HANYO;
-
-			if(action.equals("delete")) {
-				String hanyo_code = request.getParameter("hanyoCode");
-				String value_code = request.getParameter("valueCode");
-				Hanyo hanyo = new Hanyo();
+			//更新画面の移動
+			if(action.equals("updateFace")) {
+				forward = UPDATE_HANYO;
+				Hanyo hanyo  = hanyoDAO.getHanyoByCode(hanyo_code,value_code);
+				request.setAttribute("hanyo", hanyo);
+			}//消去
+			else if(action.equals("delete")) {
+				forward = LIST_HANYO;
 				hanyo.setHanyoCode(hanyo_code);
 				hanyo.setValueCode(value_code);
 				hanyoDAO.deleteHanyo(hanyo);
+				List<Hanyo> list = hanyoDAO.getAllHanyos();
+				request.setAttribute("hanyos", list);
 			}
-
-			List<Hanyo> list = hanyoDAO.getAllHanyos();
-			request.setAttribute("hanyos", list);
+		}
+		if (action.equals("list")||action.equals("firstList")) {
+			if(action.equals("firstList")) {
+				hanyo.setErrResult("");
+			}
+			forward = LIST_HANYO;
+			if(!hanyo.getErrResult().isEmpty() || hanyo.getErrResult() != null) {
+				request.setAttribute("result", hanyo.getErrResult());
+			}
+				List<Hanyo> list = hanyoDAO.getAllHanyos();
+				request.setAttribute("hanyos", list);
 		}
 		if(action.equals("face")) {
 			forward = INDEX;
 		}
-
 		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
 	}
@@ -77,8 +89,7 @@ public class HanyoController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		request.setCharacterEncoding("UTF-8");
-		//ボタンを押した時の動作
-		Hanyo hanyo = new Hanyo();
+
 		hanyo.setHanyoCode(request.getParameter("hanyo_code"));
 		hanyo.setValueCode(request.getParameter("value_code"));
 		hanyo.setValueName(request.getParameter("value_name"));
@@ -86,29 +97,61 @@ public class HanyoController extends HttpServlet {
 		hanyo.setOldValueCode(request.getParameter("valueCode"));
 		hanyo.setOldValueName(request.getParameter("valueName"));
 
+		//ボタンを押した時の動作
 		String action =request.getParameter("action");
-		if(action.equals("insert")||action.equals("update")||action.equals("list")) {
+
+		//汎用全体画面、検索の動作
+		if(action.equals("list")||action.equals("search")) {
+			forward = LIST_HANYO;
+			if(action.equals("search")) {
+				List<Hanyo> list = hanyoDAO.searchHanyos(hanyo);
+				request.setAttribute("hanyos", list);
+			}
+			else{
+				List<Hanyo> list = hanyoDAO.getAllHanyos();
+				request.setAttribute("hanyos", list);
+			}
+		}
+		//追加画面、追加の動作
+		if(action.equals("insert")||action.equals("backIn")) {
 			if(action.equals("insert")) {
 				hanyoDAO.insertHanyo(hanyo);
+				if(hanyo.getErrResult().isEmpty() || hanyo.getErrResult() == null) {
+					forward = LIST_HANYO;
+					List<Hanyo> list = hanyoDAO.getAllHanyos();
+					request.setAttribute("hanyos", list);
+				}else{
+					forward = INSERT_HANYO;
+					request.setAttribute("result",hanyo.getErrResult());
+				}
 			}
-			if(action.equals("update")){
+			if(action.equals("backIn")) {
+				forward = INSERT_HANYO;
+			}
+		}
+		//更新画面、更新の動作
+		if(action.equals("update")||action.equals("backUp")) {
+			if(action.equals("update")) {
 				hanyoDAO.updateHanyo(hanyo);
+				if(hanyo.getErrResult().isEmpty() || hanyo.getErrResult() == null) {
+					forward = LIST_HANYO;
+					List<Hanyo> list = hanyoDAO.getAllHanyos();
+					request.setAttribute("hanyos", list);
+				}
+				else{
+					forward = UPDATE_HANYO;
+					request.setAttribute("result",hanyo.getErrResult());
+					hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
+					request.setAttribute("hanyo", hanyo);
+				}
 			}
-		RequestDispatcher view = request.getRequestDispatcher(LIST_HANYO);
-		List<Hanyo> list = hanyoDAO.getAllHanyos();
-		request.setAttribute("hanyos", list);
+			if(action.equals("backUp")){
+				forward = UPDATE_HANYO;
+				hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
+				request.setAttribute("hanyo", hanyo);
+			}
+		}
+		RequestDispatcher view = request.getRequestDispatcher(forward);
 		view.forward(request, response);
-		}
-		if(action.equals("search")) {
-			RequestDispatcher view = request.getRequestDispatcher(LIST_HANYO);
-			List<Hanyo> list = hanyoDAO.searchHanyos(hanyo);
-			request.setAttribute("hanyos", list);
-			view.forward(request, response);
-		}
-		else{
-			System.out.println("p通っています。");
-		}
-
 	}
-
 }

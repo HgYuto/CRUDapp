@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,23 +17,41 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 	Connection connection = null;
 
-	public HanyoDAOImpl() throws FileNotFoundException, IOException {
+	public HanyoDAOImpl() throws FileNotFoundException, IOException, SQLException {
 
 		try {
 			connection = DButil.getConnection();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException
-				| IOException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
 			e.printStackTrace();
+			System.out.println("unconnection");
+		}
+	}
+
+	//汎用コードが重複しているか確認。
+	@Override
+	public int findCount(Hanyo hanyo) {
+		try {
+			String sql = "SELECT COUNT(*) FROM M_HANYO MH WHERE MH.HANYO_CODE = ? AND MH.VALUE_CODE = ? ;";
+
+			PreparedStatement pst = connection.prepareStatement(sql);
+			pst.setString(1, hanyo.getHanyoCode());
+			pst.setString(2, hanyo.getValueCode());
+			ResultSet rs = pst.executeQuery();
+
+			rs.next();
+			return rs.getInt(1);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
 		}
 
-		System.out.println("connection");
 	}
 
 	@Override
 	public void insertHanyo(Hanyo hanyo) {
 
 		try {
-
 			String sql = "INSERT INTO M_HANYO(HANYO_CODE,VALUE_CODE,VALUE_NAME) VALUES (?, ?, ?) ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
@@ -41,14 +60,27 @@ public class HanyoDAOImpl implements HanyoDAO {
 			pst.setString(2, hanyo.getValueCode());
 			pst.setString(3, hanyo.getValueName());
 
-			int res = pst.executeUpdate();
-
-			if (res > 0) {
-				System.out.println("入力完了");
+			if(findCount(hanyo) > 0) {
+				hanyo.setErrResult("汎用コードと値コードが重複しています。再度見直してください。");
 			}
-
-		} catch (SQLException e) {
+			else if(findCount(hanyo) < 0) {
+				hanyo.setErrResult("接続エラー：ネットワーク不良");
+			}
+			else {
+				int res = pst.executeUpdate();
+				if(res > 0) {
+					hanyo.setErrResult("");
+					System.out.println("入力完了");
+				}
+			}
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
+			hanyo.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			hanyo.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -71,14 +103,29 @@ public class HanyoDAOImpl implements HanyoDAO {
 			sql += ";";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
-			int res = pst.executeUpdate();
 
-			if (res > 0) {
-				System.out.println("更新成功");
+			if(findCount(hanyo) > 1) {
+				hanyo.setErrResult("汎用コードと値コードが重複しています。再度見直してください。");
+			}
+			else if(findCount(hanyo) <= 0) {
+				hanyo.setErrResult("接続エラー：ネットワーク不良");
+			}
+			else {
+				int res = pst.executeUpdate();
+				if (res > 0) {
+					hanyo.setErrResult("");
+					System.out.println("更新成功");
+				}
 			}
 
-		} catch (SQLException e) {
+
+		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
+			hanyo.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			hanyo.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -95,10 +142,14 @@ public class HanyoDAOImpl implements HanyoDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
+				hanyo.setErrResult("");
 				System.out.println("削除完了");
 			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -123,10 +174,14 @@ public class HanyoDAOImpl implements HanyoDAO {
 				hanyo.setValueName(rs.getString(3));
 
 				hanyos.add(hanyo);
+				hanyo.setErrResult("");
 
 			}
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -174,11 +229,13 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 				hanyos.add(hanyo1);
 			}
-			if (!hanyos.isEmpty()) {
-				System.out.println("検索成功");
-			}
+			hanyo.setErrResult("");
+			System.out.println("検索成功");
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -206,7 +263,10 @@ public class HanyoDAOImpl implements HanyoDAO {
 				}
 
 
-		} catch (SQLException e) {
+		} catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -214,32 +274,27 @@ public class HanyoDAOImpl implements HanyoDAO {
 	}
 
 	@Override
-	public String hanyoArraySet(Hanyo hanyo,int i ,int k) {
+	public String hanyoArraySet(Hanyo hanyo, int i, int j) {
 
 		String hc = hanyo.getHanyoCode();
 		String vc = hanyo.getValueCode();
 		String vn = hanyo.getValueName();
 
-		if(i == 1) {
-		String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn}};
-		return h[i][k];
-
-		}else {
 		String oldhc = hanyo.getOldHanyoCode();
 		String oldvc = hanyo.getOldValueCode();
 		String oldvn = hanyo.getOldValueName();
+
 		String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn},{oldhc,oldvc,oldvn}};
-		return h[i][k];
-		}
+		return h[i][j];
 	}
 
 	@Override
-	public String hanyoWhere(String sql,Hanyo hanyo,int i,int k) {
-			if(hanyoArraySet(hanyo,i,k).isEmpty()){
-				;
-			}else {
-				sql += decisionWhere(sql)+ hanyoArraySet(hanyo,0,k) + "= \"" + hanyoArraySet(hanyo,i,k) + "\"";
-			}
+	public String hanyoWhere( String sql, Hanyo hanyo, int i, int j) {
+		if(hanyoArraySet(hanyo,i,j).isEmpty()){
+			;
+		}else {
+			sql += decisionWhere(sql) + hanyoArraySet( hanyo, 0, j) + "= \"" + hanyoArraySet( hanyo, i, j) + "\"";
+		}
 
 		return sql;
 	}

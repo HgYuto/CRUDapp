@@ -1,0 +1,33 @@
+#deptT{
+	border-collapse : collapse;
+	border : solid 1px black;
+	width : 1200px;
+}
+
+table #deptT,#deptT th,#deptT td{
+	border-collapse : collapse;
+	border : solid 1px black;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+	text-align: left;
+}
+
+table #radio{
+	text-align: center;
+}
+
+#dScroll{
+	overflow : scroll;
+	width : 700px;
+	height : 250px;
+	margin: 0 auto;
+}
+
+#deptT thead{
+	background-color: #ffe4b5;
+}
+
+#deptT tbody{
+	background-color: white;
+}
