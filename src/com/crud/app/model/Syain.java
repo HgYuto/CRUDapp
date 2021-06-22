@@ -8,7 +8,6 @@ public class Syain {
           private String syainName;
           private String mailAddress;
           private String tel;
-          private String errResult;
 
           public Syain() {
           }
@@ -54,12 +53,4 @@ public class Syain {
           public void setTel(String tel) {
               this.tel = tel;
           	}
-
-          public String getErrResult() {
-          	return this.errResult;
-          }
-
-          public void setErrResult(String errResult) {
-          	this.errResult = errResult;
-          }
 }

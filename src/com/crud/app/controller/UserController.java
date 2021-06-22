@@ -3,6 +3,7 @@ package com.crud.app.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -26,6 +27,7 @@ public class UserController extends HttpServlet {
 
 	String forward;
 	String result;
+	String errM ="";
 	UserDAO userDAO;
 	User user = new User();
 
@@ -38,127 +40,167 @@ public class UserController extends HttpServlet {
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
-			user.setErrResult("接続エラー：ネットワーク不良");
+			errM = "接続エラー：ネットワーク不良";
 		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		//表示画面からのパラメーターを取得
-		String action = request.getParameter("action");
+		try {
+			request.setCharacterEncoding("UTF-8");
+			//表示画面からのパラメーターを取得
+			String action = request.getParameter("action");
 
-		if (action.equals("insertFace")) {
-			forward = INSERT_USER;
-		}
-		if (action.equals("updateFace")||action.equals("delete")) {
-			String syain_code = request.getParameter("syainCode");
-			String user_id = request.getParameter("userId");
-			//更新画面の移動
-			if(action.equals("updateFace")) {
-				forward = UPDATE_USER;
-				User user  = userDAO.getUserByCode(syain_code,user_id);
-				request.setAttribute("user", user);
-			}//消去
-			else if(action.equals("delete")) {
+			//エラー文リセット
+			errM = "";
+
+			if (action.equals("insertFace")) {
+				forward = INSERT_USER;
+			}
+			if (action.equals("updateFace")||action.equals("delete")) {
+				String syain_code = request.getParameter("syainCode");
+				String user_id = request.getParameter("userId");
+				//更新画面の移動
+				if(action.equals("updateFace")) {
+					forward = UPDATE_USER;
+					User user  = userDAO.getUserByCode(syain_code,user_id);
+					request.setAttribute("user", user);
+				}//消去
+				if(action.equals("delete")) {
+					forward = LIST_USER;
+					user.setSyainCode(syain_code);
+					user.setUserId(user_id);
+					userDAO.deleteUser(user);
+					List<User> list = userDAO.getAllUsers();
+					request.setAttribute("users", list);
+				}
+			}
+			if (action.equals("list")) {
 				forward = LIST_USER;
-				user.setSyainCode(syain_code);
-				user.setUserId(user_id);
-				userDAO.deleteUser(user);
 				List<User> list = userDAO.getAllUsers();
 				request.setAttribute("users", list);
 			}
-		}
-		if (action.equals("list")||action.equals("firstList")) {
-			if(action.equals("firstList")) {
-				user.setErrResult("");
+			if(action.equals("face")) {
+				forward = INDEX;
 			}
-			forward = LIST_USER;
-			if(!user.getErrResult().isEmpty() || user.getErrResult() != null) {
-				request.setAttribute("result", user.getErrResult());
-			}
-			List<User> list = userDAO.getAllUsers();
-			request.setAttribute("users", list);
 		}
-		if(action.equals("face")) {
-			forward = INDEX;
+		catch(SQLSyntaxErrorException e) {
+			e.printStackTrace();
+			errM = "構文エラー：データベースへの問い合わせに、不正な構文が検知されました。";
 		}
-
-		RequestDispatcher view = request.getRequestDispatcher(forward);
-		view.forward(request, response);
+		catch (SQLException e) {
+			e.printStackTrace();
+			errM = "接続エラー：ネットワーク不良";
+		}
+		finally{
+			request.setAttribute("result",errM);
+			RequestDispatcher view = request.getRequestDispatcher(forward);
+			view.forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
+		try {
+			request.setCharacterEncoding("UTF-8");
 
-		user.setSyainCode(request.getParameter("syain_code"));
-		user.setUserId(request.getParameter("user_id"));
-		user.setPassword(request.getParameter("password"));
-		user.setPreUserId(request.getParameter("preUserId"));
+			user.setSyainCode(request.getParameter("syain_code"));
+			user.setUserId(request.getParameter("user_id"));
+			user.setPassword(request.getParameter("password"));
+			user.setPreUserId(request.getParameter("preUserId"));
 
-		if(request.getParameter("authority").isEmpty()) {
-			short authority = -1;
-			user.setAuthority(authority);
-		}else {
-			user.setAuthority(Short.valueOf(request.getParameter("authority")));
-		}
+			//エラー文リセット
+			errM = "";
 
-		//ボタンを押した時の動作
-		String action =request.getParameter("action");
-		//ユーザ全体画面、検索の動作
-		if(action.equals("list")||action.equals("search")) {
-			forward = LIST_USER;
-			if(action.equals("search")) {
-				List<User> list = userDAO.searchUsers(user);
-				request.setAttribute("users", list);
+			if(request.getParameter("authority").isEmpty()) {
+				short authority = -1;
+				user.setAuthority(authority);
+			}else {
+				user.setAuthority(Short.valueOf(request.getParameter("authority")));
 			}
-			else{
-				List<User> list = userDAO.getAllUsers();
-				request.setAttribute("users", list);
-			}
-		}
-		//追加画面、追加の動作
-		if(action.equals("insert")||action.equals("backIn")) {
-			if(action.equals("insert")) {
-				userDAO.insertUser(user);
-				if(user.getErrResult().isEmpty() || user.getErrResult() == null) {
-					forward = LIST_USER;
-					List<User> list = userDAO.getAllUsers();
-					request.setAttribute("users", list);
-				}else{
-					forward = INSERT_USER;
-					request.setAttribute("result",user.getErrResult());
-				}
-			}
-			if(action.equals("backIn")) {
-				forward = INSERT_USER;
-			}
-		}
-		//更新画面、更新の動作
-		if(action.equals("update")||action.equals("backUp")) {
-			if(action.equals("update")) {
-				userDAO.updateUser(user);
-				if(user.getErrResult().isEmpty() || user.getErrResult() == null) {
-					forward = LIST_USER;
-					List<User> list = userDAO.getAllUsers();
+
+			//ボタンを押した時の動作
+			String action =request.getParameter("action");
+			//ユーザ全体画面、検索の動作
+			if(action.equals("list")||action.equals("search")) {
+				forward = LIST_USER;
+				if(action.equals("search")) {
+					List<User> list = userDAO.searchUsers(user);
 					request.setAttribute("users", list);
 				}
 				else{
+					List<User> list = userDAO.getAllUsers();
+					request.setAttribute("users", list);
+				}
+			}
+			//追加画面、追加の動作
+			if(action.equals("insert")||action.equals("backIn")) {
+				if(action.equals("insert")) {
+					int count = userDAO.findCount(user);
+					if(count > 0) {
+						forward = INSERT_USER;
+						errM = "社員コードもしくは、ユーザIDが重複しています。再度見直してください。";
+					}
+					else if(count < 0) {
+						forward = INSERT_USER;
+						errM = "接続エラー：ネットワーク不良";
+					}
+					else {
+					userDAO.insertUser(user);
+					forward = LIST_USER;
+					List<User> list = userDAO.getAllUsers();
+					request.setAttribute("users", list);
+					}
+				}
+				//jspでエラーの場合の画面移動
+				if(action.equals("backIn")) {
+					forward = INSERT_USER;
+				}
+			}
+			//更新画面、更新の動作
+			if(action.equals("update")||action.equals("backUp")) {
+				if(action.equals("update")) {
+					int count = userDAO.findCount(user);
+					if(count > 1) {
+						forward = UPDATE_USER;
+						errM = "ユーザIDが重複しています。再度見直してください。";
+						user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
+						request.setAttribute("user", user);
+					}
+					else if(count <= 0) {
+						forward = UPDATE_USER;
+						errM = "接続エラー：ネットワーク不良";
+						user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
+						request.setAttribute("user", user);
+					}
+					else{
+						userDAO.updateUser(user);
+						forward = LIST_USER;
+						List<User> list = userDAO.getAllUsers();
+						request.setAttribute("users", list);
+					}
+				}
+				//jspでエラーの場合の画面移動
+				if(action.equals("backUp")){
 					forward = UPDATE_USER;
-					request.setAttribute("result",user.getErrResult());
 					user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
 					request.setAttribute("user", user);
 				}
 			}
-			if(action.equals("backUp")){
-				forward = UPDATE_USER;
-				user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
-				request.setAttribute("user", user);
-			}
 		}
-		RequestDispatcher view = request.getRequestDispatcher(forward);
-		view.forward(request, response);
+		catch(SQLSyntaxErrorException e) {
+			e.printStackTrace();
+			errM = "構文エラー：データベースへの問い合わせに、不正な構文が検知されました。";
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			errM = "接続エラー：ネットワーク不良";
+		}
+		finally{
+			request.setAttribute("result",errM);
+			RequestDispatcher view = request.getRequestDispatcher(forward);
+			view.forward(request, response);
+		}
 	}
 
 }

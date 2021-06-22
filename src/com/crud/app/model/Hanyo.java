@@ -10,8 +10,6 @@ public class Hanyo {
           private String oldValueCode;
           private String oldValueName;
 
-          private String errResult;
-
           public Hanyo() {
           }
 
@@ -60,14 +58,6 @@ public class Hanyo {
            }
            public void setOldValueName(String oldValueName) {
                   this.oldValueName = oldValueName;
-           }
-
-           public String getErrResult() {
-           	return this.errResult;
-           }
-
-           public void setErrResult(String errResult) {
-           	this.errResult = errResult;
            }
 
 }

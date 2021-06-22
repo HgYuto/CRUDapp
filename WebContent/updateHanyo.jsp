@@ -19,6 +19,7 @@ function backList(){
 	ele.setAttribute("value","list");
 	return form.appendChild(ele);
 };
+
 </script>
  <form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" >
  <div id="f">

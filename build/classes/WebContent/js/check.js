@@ -86,3 +86,8 @@ function isPoNum(name,id){
         return name + "に正数を入力して下さい。\r\n";
     }
 };
+
+//test用(白髭)
+function OutputTest(id){
+        return "テスト\r\n";
+};

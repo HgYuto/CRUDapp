@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public int findCount(User user) {
 		try {
-			String sql = "SELECT COUNT(*) FROM M_USER MU WHERE MU.SYAIN_CD = ? OR MU.USER_ID = ? ;";
+			String sql = "SELECTCOUNT(*) FROM M_USER MU WHERE MU.SYAIN_CD = ? OR MU.USER_ID = ? ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, user.getSyainCode());
@@ -49,7 +49,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void insertUser(User user) {
+	public void insertUser(User user)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -62,32 +62,21 @@ public class UserDAOImpl implements UserDAO {
 			pst.setString(3, user.getPassword());
 			pst.setShort(4, user.getAuthority());
 
-			if(findCount(user) > 0) {
-				user.setErrResult("社員コードもしくは、ユーザIDが重複しています。再度見直してください。");
-			}
-			else if(findCount(user) < 0) {
-				user.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if(res > 0) {
-					user.setErrResult("");
-					System.out.println("入力完了");
-				}
+			int res = pst.executeUpdate();
+			if(res > 0) {
+				System.out.println("入力完了");
 			}
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			user.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			user.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void updateUser(User user) {
+	public void updateUser(User user)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 			String sql = "UPDATE M_USER SET USER_ID = ? ,PASSWORD = ? ,AUTHORITY = ? WHERE SYAIN_CD = ? AND USER_ID = ? ;";
@@ -100,32 +89,22 @@ public class UserDAOImpl implements UserDAO {
 			pst.setString(4, user.getSyainCode());
 			pst.setString(5,user.getPreUserId());
 
-			if(findCount(user) > 1) {
-				user.setErrResult("社員コードもしくは、ユーザIDが重複しています。再度見直してください。");
+			int res = pst.executeUpdate();
+			if (res > 0) {
+				System.out.println("更新成功");
 			}
-			else if(findCount(user) <= 0) {
-				user.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if (res > 0) {
-					user.setErrResult("");
-					System.out.println("更新成功");
-				}
-			}
+
 
 		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			user.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			user.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void deleteUser(User user) {
+	public void deleteUser(User user)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -137,7 +116,6 @@ public class UserDAOImpl implements UserDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				user.setErrResult("");
 				System.out.println("削除完了");
 			}
 
@@ -150,7 +128,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
+	public List<User> getAllUsers()throws SQLSyntaxErrorException,SQLException {
 
 		List<User> users = new ArrayList<User>();
 
@@ -186,7 +164,6 @@ public class UserDAOImpl implements UserDAO {
 		return users;
 	}
 
-	@Override
 	public String decisionWhere(String sql) {
 		if(sql.contains("WHERE")) {
 			return " AND ";
@@ -238,8 +215,7 @@ public class UserDAOImpl implements UserDAO {
 
 				users.add(userCol);
 			}
-				user.setErrResult("");
-				System.out.println("検索成功");
+			System.out.println("検索成功");
 
 		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();

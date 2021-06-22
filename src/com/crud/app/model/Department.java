@@ -13,7 +13,6 @@ public class Department {
           private String tel;
           private String chargeName;
           private String mail;
-          private String errResult;
 
           public Department() {
           }
@@ -108,14 +107,6 @@ public class Department {
             }
             public void setMail(String mail) {
                 this.mail = mail;
-            }
-
-            public String getErrResult() {
-            	return this.errResult;
-            }
-
-            public void setErrResult(String errResult) {
-            	this.errResult = errResult;
             }
 
 }

@@ -24,7 +24,7 @@
 	}
 	if(link== 2){
 		para = "?action=updateFace&hanyoCode=";
-		if(getCode(0)==''&&getCode(1)==''){
+		if(getCode(0)=="" && getCode(1)==''){
 			window.alert("データを選択してください。");
 		}else{
 			location.href = url + para + para1 + para2 + para3;
@@ -32,14 +32,13 @@
 	}
 	if(link== 3){
 		para = "?action=delete&hanyoCode=";
-		if(getCode(0)==''&&getCode(1)==''){
+		if(getCode(0)=="" && getCode(1)==''){
 			window.alert("データを選択してください。");
 		}else{
 			location.href = url + para + para1 + para2 + para3;
 		}
 	}
 	if(link== 4){
-		url = "CustomerController";
 		para = "?action=face";
 		location.href = url + para;
 	}
@@ -48,9 +47,10 @@
   	let hanyoCodes = document.getElementsByName("hanyoCode");
   	let valueCodes = document.getElementsByName("valueCode");
   	let len = hanyoCodes.length;
+  	let len1 = valueCodes.length;
   	let hanyoCode = '';
   	let valueCode = '';
-  	for(let i = 0;i < hanyoCodes.length; i++){
+  	for(let i = 0 ; i < hanyoCodes.length ; i++){
   		if(hanyoCodes.item(i).checked){
   			hanyoCode = hanyoCodes.item(i).value;
   			valueCode = valueCodes.item(i).value;

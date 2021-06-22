@@ -6,7 +6,6 @@ public class Customer {
           private String custName;
           private String url;
           private String paymentSite;
-          private String errResult;
 
           public Customer() {
           }
@@ -48,14 +47,6 @@ public class Customer {
 
             public void setPaymentSite(String paymentSite) {
             	this.paymentSite = paymentSite;
-            }
-
-            public String getErrResult() {
-            	return this.errResult;
-            }
-
-            public void setErrResult(String errResult) {
-            	this.errResult = errResult;
             }
 
 }

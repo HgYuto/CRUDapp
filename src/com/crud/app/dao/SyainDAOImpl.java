@@ -49,7 +49,7 @@ public class SyainDAOImpl implements SyainDAO {
 	}
 
 	@Override
-	public void insertSyain(Syain syain) {
+	public void insertSyain(Syain syain)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -63,32 +63,21 @@ public class SyainDAOImpl implements SyainDAO {
 			pst.setString(4, syain.getMailAddress());
 			pst.setString(5, syain.getTel());
 
-			if(findCount(syain) > 0) {
-				syain.setErrResult("社員コードが重複しています。再度見直してください。");
-			}
-			else if(findCount(syain) < 0) {
-				syain.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if(res > 0) {
-					syain.setErrResult("");
-					System.out.println("入力完了");
-				}
+			int res = pst.executeUpdate();
+			if(res > 0) {
+				System.out.println("入力完了");
 			}
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			syain.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			syain.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void updateSyain(Syain syain) {
+	public void updateSyain(Syain syain)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 			String sql = "UPDATE M_SYAIN SET POSITION = ? ,SYAIN_NAME = ? ,MAILADDRESS = ?,TEL = ? WHERE SYAIN_CD = ?";
@@ -104,22 +93,19 @@ public class SyainDAOImpl implements SyainDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				syain.setErrResult("");
 				System.out.println("更新成功");
 			}
 
 		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			syain.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			syain.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void deleteSyain(Syain syain) {
+	public void deleteSyain(Syain syain)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -130,7 +116,6 @@ public class SyainDAOImpl implements SyainDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				syain.setErrResult("");
 				System.out.println("削除完了");
 			}
 
@@ -143,7 +128,7 @@ public class SyainDAOImpl implements SyainDAO {
 	}
 
 	@Override
-	public List<Syain> getAllSyains() {
+	public List<Syain> getAllSyains()throws SQLSyntaxErrorException,SQLException {
 
 		List<Syain> syains = new ArrayList<Syain>();
 
@@ -177,7 +162,6 @@ public class SyainDAOImpl implements SyainDAO {
 		return syains;
 	}
 
-	@Override
 	public String decisionWhere(String sql) {
 		if(sql.contains("WHERE")) {
 			return " AND ";
@@ -231,7 +215,6 @@ public class SyainDAOImpl implements SyainDAO {
 
 				syains.add(syainCol);
 			}
-			syain.setErrResult("");
 			System.out.println("検索成功");
 
 

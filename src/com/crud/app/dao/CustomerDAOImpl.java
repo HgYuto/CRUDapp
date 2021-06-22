@@ -50,7 +50,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public void insertCustomer(Customer customer) {
+	public void insertCustomer(Customer customer)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -64,27 +64,17 @@ public class CustomerDAOImpl implements CustomerDAO {
 			pst.setString(3, customer.getUrl());
 			pst.setString(4, customer.getPaymentSite());
 
-			if(findCount(customer) > 0) {
-				customer.setErrResult("取引先コードが重複しています。再度見直してください。");
-			}
-			else if(findCount(customer) < 0) {
-				customer.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
 				int res = pst.executeUpdate();
 				if(res > 0) {
-					customer.setErrResult("");
 					System.out.println("入力完了");
 				}
-			}
+
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			customer.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			customer.setErrResult("接続エラー：ネットワーク不良");
 		}
 
 /*		finally {
@@ -101,9 +91,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 */	}
 
 	@Override
-	public void updateCustomer(Customer customer) {
+	public void updateCustomer(Customer customer)throws SQLSyntaxErrorException,SQLException  {
 
-		try {
 			String sql = "UPDATE M_CUSTOMER SET CUST_NAME = ? ,URL = ? ,PAYMENT_SITE = ? WHERE CUST_CODE = ? ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
@@ -116,23 +105,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				customer.setErrResult("");
 				System.out.println("更新成功");
 			}
 
-		}
-		catch (SQLSyntaxErrorException e) {
-			e.printStackTrace();
-			customer.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			customer.setErrResult("接続エラー：ネットワーク不良");
-		}
 	}
 
 	@Override
-	public void deleteCustomer(Customer customer) {
+	public void deleteCustomer(Customer customer)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -143,7 +122,6 @@ public class CustomerDAOImpl implements CustomerDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				customer.setErrResult("");
 				System.out.println("削除完了");
 			}
 
@@ -157,7 +135,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public List<Customer> getAllCustomers() {
+	public List<Customer> getAllCustomers()throws SQLSyntaxErrorException,SQLException {
 
 		List<Customer> customers = new ArrayList<Customer>();
 
@@ -198,7 +176,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public List<Customer> searchCustomers(Customer customer) {
+	public List<Customer> searchCustomers(Customer customer){
 
 		List<Customer> customers = new ArrayList<Customer>();
 
@@ -234,7 +212,6 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 				customers.add(customerCol);
 			}
-				customer.setErrResult("");
 				System.out.println("検索成功");
 
 		} catch (SQLSyntaxErrorException e) {
@@ -248,7 +225,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public Customer getCustomerByCode(String cust_code) {
+	public Customer getCustomerByCode(String cust_code)throws SQLSyntaxErrorException,SQLException  {
 
 		Customer customer = null;
 

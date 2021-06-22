@@ -70,27 +70,16 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 			pst.setString(10, department.getChargeName());
 			pst.setString(11, department.getMail());
 
-			if(findCount(department) > 0) {
-				department.setErrResult("取引先コードが重複しています。再度見直してください。");
-			}
-			else if(findCount(department) < 0) {
-				department.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if(res > 0) {
-					department.setErrResult("");
-					System.out.println("入力完了");
-				}
+			int res = pst.executeUpdate();
+			if(res > 0) {
+				System.out.println("入力完了");
 			}
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			department.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			department.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
@@ -118,23 +107,20 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				department.setErrResult("");
 				System.out.println("更新成功");
 			}
 
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			department.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			department.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void deleteDepartment(Department department) {
+	public void deleteDepartment(Department department)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -146,7 +132,6 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				department.setErrResult("");
 				System.out.println("削除完了");
 			}
 
@@ -160,7 +145,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 	}
 
 	@Override
-	public List<Department> getAllDepartments() {
+	public List<Department> getAllDepartments()throws SQLSyntaxErrorException,SQLException {
 
 		List<Department> departments = new ArrayList<Department>();
 
@@ -187,7 +172,6 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 				department.setMail(rs.getString(11));
 
 				departments.add(department);
-				department.setErrResult("");
 			}
 		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
@@ -258,7 +242,6 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 
 				departments.add(departmentCol);
 			}
-				department.setErrResult("");
 				System.out.println("検索成功");
 
 		} catch (SQLSyntaxErrorException e) {

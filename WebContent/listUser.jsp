@@ -39,7 +39,6 @@
 		}
 	}
 	if(link== 4){
-		url = "CustomerController";
 		para = "?action=face";
 		location.href = url + para;
 	}

@@ -49,7 +49,7 @@ public class HanyoDAOImpl implements HanyoDAO {
 	}
 
 	@Override
-	public void insertHanyo(Hanyo hanyo) {
+	public void insertHanyo(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException{
 
 		try {
 			String sql = "INSERT INTO M_HANYO(HANYO_CODE,VALUE_CODE,VALUE_NAME) VALUES (?, ?, ?) ;";
@@ -60,32 +60,21 @@ public class HanyoDAOImpl implements HanyoDAO {
 			pst.setString(2, hanyo.getValueCode());
 			pst.setString(3, hanyo.getValueName());
 
-			if(findCount(hanyo) > 0) {
-				hanyo.setErrResult("汎用コードと値コードが重複しています。再度見直してください。");
-			}
-			else if(findCount(hanyo) < 0) {
-				hanyo.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if(res > 0) {
-					hanyo.setErrResult("");
-					System.out.println("入力完了");
-				}
+			int res = pst.executeUpdate();
+			if(res > 0) {
+				System.out.println("入力完了");
 			}
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			hanyo.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			hanyo.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void updateHanyo(Hanyo hanyo) {
+	public void updateHanyo(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 			String sql = "UPDATE M_HANYO ";
@@ -103,34 +92,22 @@ public class HanyoDAOImpl implements HanyoDAO {
 			sql += ";";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
-
-			if(findCount(hanyo) > 1) {
-				hanyo.setErrResult("汎用コードと値コードが重複しています。再度見直してください。");
-			}
-			else if(findCount(hanyo) <= 0) {
-				hanyo.setErrResult("接続エラー：ネットワーク不良");
-			}
-			else {
-				int res = pst.executeUpdate();
-				if (res > 0) {
-					hanyo.setErrResult("");
-					System.out.println("更新成功");
-				}
+			int res = pst.executeUpdate();
+			if (res > 0) {
+				System.out.println("更新成功");
 			}
 
 
 		} catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
-			hanyo.setErrResult("構文エラー：データベースへの問い合わせに、不正な構文が検知されました。");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
-			hanyo.setErrResult("接続エラー：ネットワーク不良");
 		}
 	}
 
 	@Override
-	public void deleteHanyo(Hanyo hanyo) {
+	public void deleteHanyo(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException {
 
 		try {
 
@@ -142,7 +119,6 @@ public class HanyoDAOImpl implements HanyoDAO {
 			int res = pst.executeUpdate();
 
 			if (res > 0) {
-				hanyo.setErrResult("");
 				System.out.println("削除完了");
 			}
 
@@ -155,7 +131,7 @@ public class HanyoDAOImpl implements HanyoDAO {
 	}
 
 	@Override
-	public List<Hanyo> getAllHanyos() {
+	public List<Hanyo> getAllHanyos()throws SQLSyntaxErrorException,SQLException {
 
 		List<Hanyo> hanyos = new ArrayList<Hanyo>();
 
@@ -174,8 +150,6 @@ public class HanyoDAOImpl implements HanyoDAO {
 				hanyo.setValueName(rs.getString(3));
 
 				hanyos.add(hanyo);
-				hanyo.setErrResult("");
-
 			}
 
 		} catch (SQLSyntaxErrorException e) {
@@ -229,7 +203,6 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 				hanyos.add(hanyo1);
 			}
-			hanyo.setErrResult("");
 			System.out.println("検索成功");
 
 		} catch (SQLSyntaxErrorException e) {

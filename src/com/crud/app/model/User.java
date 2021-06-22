@@ -12,8 +12,6 @@ public class User {
           //更新前のデータ
           private String preUserId;
 
-          private String errResult;
-
           public User() {
           }
 
@@ -65,11 +63,4 @@ public class User {
               this.preUserId = preUserId;
          }
 
-          public String getErrResult() {
-          	return this.errResult;
-          }
-
-          public void setErrResult(String errResult) {
-          	this.errResult = errResult;
-          }
 }

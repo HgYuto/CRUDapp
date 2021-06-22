@@ -3,6 +3,7 @@ package com.crud.app.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -26,6 +27,7 @@ public class CustomerController extends HttpServlet {
 
 	String forward;
 	String result;
+	String errM = "";
 	CustomerDAO customerDAO;
 	Customer customer = new Customer();
 
@@ -37,118 +39,144 @@ public class CustomerController extends HttpServlet {
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
-			customer.setErrResult("接続エラー：ネットワーク不良");
+			errM = "接続エラー：ネットワーク不良";
 		}
 
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		//表示画面からのパラメーターを取得
-		String action = request.getParameter("action");
+		try {
+			request.setCharacterEncoding("UTF-8");
+			//表示画面からのパラメーターを取得
+			String action = request.getParameter("action");
 
-		if (action.equals("insertFace")) {
-			forward = INSERT_CUSTOMER;
-		}
-		if (action.equals("updateFace")||action.equals("delete")) {
-			String cust_code = request.getParameter("custCode");
-			//更新画面の移動
-			if(action.equals("updateFace")) {
-				forward = UPDATE_CUSTOMER;
-				customer = customerDAO.getCustomerByCode(cust_code);
-				request.setAttribute("customer", customer);
-			}//消去
-			else if(action.equals("delete")) {
+			//エラー文リセット
+			errM = "";
+
+			if (action.equals("insertFace")) {
+				forward = INSERT_CUSTOMER;
+			}
+			if (action.equals("updateFace")||action.equals("delete")) {
+				String cust_code = request.getParameter("custCode");
+				//更新画面の移動
+				if(action.equals("updateFace")) {
+					forward = UPDATE_CUSTOMER;
+					customer = customerDAO.getCustomerByCode(cust_code);
+					request.setAttribute("customer", customer);
+				}//消去
+				if(action.equals("delete")) {
+					forward = LIST_CUSTOMER;
+					customer.setCustCode(cust_code);
+					customerDAO.deleteCustomer(customer);
+					List<Customer> list = customerDAO.getAllCustomers();
+					request.setAttribute("customers", list);
+				}
+			}
+			if (action.equals("list")){
 				forward = LIST_CUSTOMER;
-				customer.setCustCode(cust_code);
-				customerDAO.deleteCustomer(customer);
 				List<Customer> list = customerDAO.getAllCustomers();
 				request.setAttribute("customers", list);
 			}
-		}
-		if (action.equals("list")||action.equals("firstList")){
-			if(action.equals("firstList")) {
-				customer.setErrResult("");
+			if(action.equals("face")) {
+				forward = INDEX;
 			}
-			forward = LIST_CUSTOMER;
-			if(!customer.getErrResult().isEmpty() || customer.getErrResult() != null) {
-				request.setAttribute("result", customer.getErrResult());
-			}
-			List<Customer> list = customerDAO.getAllCustomers();
-			request.setAttribute("customers", list);
 		}
-		if(action.equals("face")) {
-			forward = INDEX;
+		catch(SQLSyntaxErrorException e) {
+			e.printStackTrace();
+			errM = "構文エラー：データベースへの問い合わせに、不正な構文が検知されました。";
 		}
-		RequestDispatcher view = request.getRequestDispatcher(forward);
-		view.forward(request, response);
+		catch (SQLException e) {
+			e.printStackTrace();
+			errM = "接続エラー：ネットワーク不良";
+		}
+		finally{
+			request.setAttribute("result",errM);
+			RequestDispatcher view = request.getRequestDispatcher(forward);
+			view.forward(request, response);
+		}
 	}
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		customer.setCustCode(request.getParameter("cust_code"));
-		customer.setCustName(request.getParameter("cust_name"));
-		customer.setUrl(request.getParameter("url"));
-		customer.setPaymentSite(request.getParameter("payment_site"));
+		try {
+			request.setCharacterEncoding("UTF-8");
+			customer.setCustCode(request.getParameter("cust_code"));
+			customer.setCustName(request.getParameter("cust_name"));
+			customer.setUrl(request.getParameter("url"));
+			customer.setPaymentSite(request.getParameter("payment_site"));
 
-		//ボタンを押した時の動作
-		String action =request.getParameter("action");
-		//取引先全体画面、検索
-		if(action.equals("list")||action.equals("search")) {
-			forward = LIST_CUSTOMER;
-			if(action.equals("search")) {
-				List<Customer> list = customerDAO.searchCustomers(customer);
-				request.setAttribute("customers", list);
-			}
-			else{
-				List<Customer> list = customerDAO.getAllCustomers();
-				request.setAttribute("customers", list);
-			}
-		}
-		//追加画面、追加の動作
-		if(action.equals("insert")||action.equals("backIn")) {
-			if(action.equals("insert")) {
-				customerDAO.insertCustomer(customer);
-				if(customer.getErrResult().isEmpty() || customer.getErrResult() == null) {
-					forward = LIST_CUSTOMER;
-					List<Customer> list = customerDAO.getAllCustomers();
-					request.setAttribute("customers", list);
-				}else{
-					forward = INSERT_CUSTOMER;
-					request.setAttribute("result",customer.getErrResult());
-				}
-			}
-			if(action.equals("backIn")) {
-				forward = INSERT_CUSTOMER;
-			}
-		}
-		//更新画面、更新の動作
-		if(action.equals("update")||action.equals("backUp")) {
-			if(action.equals("update")) {
-				customerDAO.updateCustomer(customer);
-				if(customer.getErrResult().isEmpty() || customer.getErrResult() == null) {
-					forward = LIST_CUSTOMER;
-					List<Customer> list = customerDAO.getAllCustomers();
+			//ボタンを押した時の動作
+			String action =request.getParameter("action");
+
+			//エラー文リセット
+			errM = "";
+
+			//取引先全体画面に戻る、検索
+			if(action.equals("list")||action.equals("search")) {
+				forward = LIST_CUSTOMER;
+				if(action.equals("search")) {
+					List<Customer> list = customerDAO.searchCustomers(customer);
 					request.setAttribute("customers", list);
 				}
 				else{
+					List<Customer> list = customerDAO.getAllCustomers();
+					request.setAttribute("customers", list);
+				}
+			}
+			//追加画面、追加の動作
+			if(action.equals("insert")||action.equals("backIn")) {
+				if(action.equals("insert")) {
+					int count = customerDAO.findCount(customer);
+					if(count > 0) {
+						forward = INSERT_CUSTOMER;
+						errM = "取引先コードが重複しています。再度見直してください。";
+					}
+					else if(count < 0) {
+						forward = INSERT_CUSTOMER;
+						errM = "接続エラー：ネットワーク不良";
+					}
+					else {
+						customerDAO.insertCustomer(customer);
+						forward = LIST_CUSTOMER;
+						List<Customer> list = customerDAO.getAllCustomers();
+						request.setAttribute("customers", list);
+					}
+				}
+				//jspでエラーの場合の画面移動
+				if(action.equals("backIn")) {
+					forward = INSERT_CUSTOMER;
+				}
+			}
+			//更新画面、更新の動作
+			if(action.equals("update")||action.equals("backUp")) {
+				if(action.equals("update")) {
+					customerDAO.updateCustomer(customer);
+					forward = LIST_CUSTOMER;
+					List<Customer> list = customerDAO.getAllCustomers();
+					request.setAttribute("customers", list);
+				}
+				//jspでエラーの場合の画面移動
+				if(action.equals("backUp")){
 					forward = UPDATE_CUSTOMER;
-					request.setAttribute("result",customer.getErrResult());
 					customer = customerDAO.getCustomerByCode(customer.getCustCode());
 					request.setAttribute("customer", customer);
 				}
 			}
-			if(action.equals("backUp")){
-				forward = UPDATE_CUSTOMER;
-				customer = customerDAO.getCustomerByCode(customer.getCustCode());
-				request.setAttribute("customer", customer);
-			}
 		}
-		RequestDispatcher view = request.getRequestDispatcher(forward);
-		view.forward(request, response);
-
+		catch(SQLSyntaxErrorException e) {
+				e.printStackTrace();
+				errM = "構文エラー：データベースへの問い合わせに、不正な構文が検知されました。";
+			}
+		catch (SQLException e) {
+				e.printStackTrace();
+				errM = "接続エラー：ネットワーク不良";
+		}
+		finally{
+			request.setAttribute("result",errM);
+			RequestDispatcher view = request.getRequestDispatcher(forward);
+			view.forward(request, response);
+		}
 	}
-
 }

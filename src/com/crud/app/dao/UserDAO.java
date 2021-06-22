@@ -1,5 +1,7 @@
 package com.crud.app.dao;
 
+import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 import com.crud.app.model.User;
@@ -8,13 +10,13 @@ public interface UserDAO {
 
 	int findCount(User user);
 
-	void insertUser(User user);
+	void insertUser(User user)throws SQLSyntaxErrorException,SQLException;
 
-	void updateUser(User user);
+	void updateUser(User user)throws SQLSyntaxErrorException,SQLException;
 
-	void deleteUser(User user);
+	void deleteUser(User user)throws SQLSyntaxErrorException,SQLException;
 
-	List<User> getAllUsers();
+	List<User> getAllUsers()throws SQLSyntaxErrorException,SQLException;
 
 	String decisionWhere(String sql);
 
