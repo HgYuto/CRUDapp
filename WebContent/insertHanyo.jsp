@@ -10,18 +10,8 @@
 	<title>汎用コードマスター管理(追加)</title>
 </head>
 <body>
-<script type="text/javascript">
-function backList(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","list");
-	return form.appendChild(ele);
-};
-</script>
-
-<form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" >
+<form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" onsubmit = "return checkBottan()">
+<input type="hidden" name="key" value=""/>
 <div id="f">
 <h1>汎用コードマスター管理画面(追加)</h1>
 <table>
@@ -49,10 +39,10 @@ function backList(){
 <table>
 <tr>
  <td>
-  <input type="submit" id="insert" name="insert" value="追加" onclick="inputCheck()">
+  <input type="submit" id="insert" name="insert" value="追加" onclick = "form.key.value = 'insert'">
  </td>
-  <td>
-  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
+ <td>
+  <input type="submit" id="list" name="list" value="戻る" onclick = "form.key.value = 'list'">
  </td>
 </tr>
 </table>
