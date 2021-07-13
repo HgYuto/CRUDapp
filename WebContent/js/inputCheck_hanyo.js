@@ -1,5 +1,12 @@
+function checkBottan(){
+	if(form.key.value == 'insert'){
+		return inputCheck();
+	}
+	if(form.key.value == 'list'){
+		return backList();
+	}
+}
 function inputCheck() {
-
 	eMassage = "";
 
 	eMassage = mustCheck("汎用コード",form.hanyo_code).concat(
@@ -25,7 +32,6 @@ function inputCheck() {
 		window.alert(eMassage);
 		return backIn();
 	}
-
 };
 
 function inputInsert(){
@@ -44,4 +50,13 @@ function backIn(){
 			ele.setAttribute("name","action");
 			ele.setAttribute("value","backIn");
 			return form.appendChild(ele);
+};
+
+function backList(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","list");
+	return form.appendChild(ele);
 };
