@@ -22,5 +22,5 @@ public interface SyainDAO {
 
 	List<Syain> searchSyains(Syain syain);
 
-	Syain getSyainByCode(String syain_code);
+	Syain getSyainByCode(String syain_code)throws SQLSyntaxErrorException,SQLException;
 }

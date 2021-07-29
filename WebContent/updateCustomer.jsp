@@ -9,17 +9,8 @@
 	<title>取引先マスター管理(更新)</title>
 </head>
 <body>
-<script type="text/javascript">
-function backList(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","list");
-	return form.appendChild(ele);
-};
-</script>
 <form id="form" name="form" action="/CRUDapp/CustomerController" method="POST">
+<input type="hidden" name="key" value=""/>
 <div id="f">
 <h1>取引先マスター管理画面(更新)</h1>
 <table>
@@ -42,7 +33,7 @@ function backList(){
      </td>
   </tr>
   <tr>
-   <th>支払いサイト</th>
+   <th>支払サイト</th>
      <td>
        <input type="text" value="${customer.paymentSite}" name="payment_site" size="20" <c:out value="${customer.paymentSite}" /> />
      </td>
@@ -54,10 +45,10 @@ function backList(){
 <table>
 <tr>
  <td>
-  <input type="submit" id="update" name="update" value="更新" onclick="updateCheck()">
+  <button type="button" id="update" name="update" onclick = "updateCheck()">更新</button>
  </td>
  <td>
-  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
+  <button type="button" id="list" name="list" onclick = "backList()">戻る</button>
  </td>
 </tr>
 </table>

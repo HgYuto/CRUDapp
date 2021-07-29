@@ -134,57 +134,43 @@ public class UserController extends HttpServlet {
 				}
 			}
 			//追加画面、追加の動作
-			if(action.equals("insert")||action.equals("backIn")) {
-				if(action.equals("insert")) {
-					int count = userDAO.findCount(user);
-					if(count > 0) {
-						forward = INSERT_USER;
-						errM = "社員コードもしくは、ユーザIDが重複しています。再度見直してください。";
-					}
-					else if(count < 0) {
-						forward = INSERT_USER;
-						errM = "接続エラー：ネットワーク不良";
-					}
-					else {
+			if(action.equals("insert")) {
+				int count = userDAO.findCount(user);
+				if(count > 0) {
+					forward = INSERT_USER;
+					errM = "ユーザIDが重複しています。再度見直してください。";
+				}
+				else if(count < 0) {
+					forward = INSERT_USER;
+					errM = "接続エラー：ネットワーク不良";
+				}
+				else {
 					userDAO.insertUser(user);
 					forward = LIST_USER;
 					List<User> list = userDAO.getAllUsers();
 					request.setAttribute("users", list);
 					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backIn")) {
-					forward = INSERT_USER;
-				}
 			}
 			//更新画面、更新の動作
-			if(action.equals("update")||action.equals("backUp")) {
-				if(action.equals("update")) {
-					int count = userDAO.findCount(user);
-					if(count > 1) {
-						forward = UPDATE_USER;
-						errM = "ユーザIDが重複しています。再度見直してください。";
-						user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
-						request.setAttribute("user", user);
-					}
-					else if(count <= 0) {
-						forward = UPDATE_USER;
-						errM = "接続エラー：ネットワーク不良";
-						user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
-						request.setAttribute("user", user);
-					}
-					else{
-						userDAO.updateUser(user);
-						forward = LIST_USER;
-						List<User> list = userDAO.getAllUsers();
-						request.setAttribute("users", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backUp")){
+			if(action.equals("update")) {
+				int count = userDAO.findCount(user);
+				if(count > 1) {
 					forward = UPDATE_USER;
+					errM = "ユーザIDが重複しています。再度見直してください。";
 					user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
 					request.setAttribute("user", user);
+				}
+				else if(count <= 0) {
+					forward = UPDATE_USER;
+					errM = "接続エラー：ネットワーク不良";
+					user = userDAO.getUserByCode(user.getSyainCode(),user.getPreUserId());
+					request.setAttribute("user", user);
+				}
+				else{
+					userDAO.updateUser(user);
+					forward = LIST_USER;
+					List<User> list = userDAO.getAllUsers();
+					request.setAttribute("users", list);
 				}
 			}
 		}

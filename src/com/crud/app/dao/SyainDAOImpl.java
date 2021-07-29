@@ -229,7 +229,7 @@ public class SyainDAOImpl implements SyainDAO {
 	}
 
 	@Override
-	public Syain getSyainByCode(String syain_code) {
+	public Syain getSyainByCode(String syain_code)throws SQLSyntaxErrorException,SQLException {
 
 		Syain syain = null;
 

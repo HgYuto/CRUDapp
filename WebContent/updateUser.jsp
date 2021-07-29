@@ -10,30 +10,20 @@
 	<title>ユーザマスター管理(更新)</title>
 </head>
 <body>
-<script type="text/javascript">
-function backList(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","list");
-	return form.appendChild(ele);
-};
-</script>
  <form id="form" name="form" action="/CRUDapp/UserController" method="POST" >
+ <input type="hidden" name="key" value=""/>
  <div id="f">
  <h1>ユーザマスター管理画面(更新)</h1>
  <input type="hidden" value="${user.userId}" name="preUserId" />
 <table>
   <tr>
- <tr>
     <th>社員コード</th>
      <td>
       <input type="text" value="${user.syainCode}" name="syain_code"  id="gray" size="15" readonly/>
      </td>
   </tr>
   <tr>
-  <th>社員名</th>
+  	<th>社員名</th>
      <td>
       <input type="text" value="${user.syainName}" name="syain_name"  id="gray" size="15" readonly/>
      </td>
@@ -51,7 +41,7 @@ function backList(){
      </td>
   </tr>
   <tr>
-  <th>権限</th>
+  	<th>権限</th>
      <td>
       <input type="text" value="${user.authority}" name="authority" size="9" <c:out value="${user.authority}" /> />
      </td>
@@ -61,11 +51,11 @@ function backList(){
 <div id="b">
 <table>
 <tr>
- <td>
-  <input type="submit" id="update" name="update" value="更新" onclick="updateCheck()">
+<td>
+  <button type="button" id="update" name="update" onclick = "updateCheck()">更新</button>
  </td>
  <td>
-  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
+  <button type="button" id="list" name="list" onclick = "backList()">戻る</button>
  </td>
 </tr>
 </table>

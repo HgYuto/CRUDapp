@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public int findCount(User user) {
 		try {
-			String sql = "SELECTCOUNT(*) FROM M_USER MU WHERE MU.SYAIN_CD = ? OR MU.USER_ID = ? ;";
+			String sql = "SELECT COUNT(*) FROM M_USER MU WHERE MU.SYAIN_CD = ? OR MU.USER_ID = ? ;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, user.getSyainCode());
@@ -228,7 +228,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByCode(String syain_code,String user_id) {
+	public User getUserByCode(String syain_code,String user_id)throws SQLSyntaxErrorException, SQLException {
 
 		User user = null;
 

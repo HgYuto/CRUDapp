@@ -62,7 +62,7 @@ public class SyainController extends HttpServlet {
 				//更新画面の移動
 				if(action.equals("updateFace")) {
 					forward = UPDATE_SYAIN;
-					Syain syain  = syainDAO.getSyainByCode(syain_code);
+					syain  = syainDAO.getSyainByCode(syain_code);
 					request.setAttribute("syain", syain);
 				}//消去
 				if(action.equals("delete")) {
@@ -134,43 +134,29 @@ public class SyainController extends HttpServlet {
 				}
 			}
 			//追加画面、追加の動作
-			if(action.equals("insert")||action.equals("backIn")) {
-				if(action.equals("insert")) {
-					int count = syainDAO.findCount(syain);
-					if(count > 0) {
-						forward = INSERT_SYAIN;
-						errM = "社員コードが重複しています。再度見直してください。";
-					}
-					else if(count < 0) {
-						forward = INSERT_SYAIN;
-						errM = "接続エラー：ネットワーク不良";
-					}
-					else {
-						syainDAO.insertSyain(syain);
-						forward = LIST_SYAIN;
-						List<Syain> list = syainDAO.getAllSyains();
-						request.setAttribute("syains", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backIn")) {
+			if(action.equals("insert")) {
+				int count = syainDAO.findCount(syain);
+				if(count > 0) {
 					forward = INSERT_SYAIN;
+					errM = "社員コードが重複しています。再度見直してください。";
 				}
-			}
-			//更新画面、更新の動作
-			if(action.equals("update")||action.equals("backUp")) {
-				if(action.equals("update")) {
-					syainDAO.updateSyain(syain);
+				else if(count < 0) {
+					forward = INSERT_SYAIN;
+					errM = "接続エラー：ネットワーク不良";
+				}
+				else {
+					syainDAO.insertSyain(syain);
 					forward = LIST_SYAIN;
 					List<Syain> list = syainDAO.getAllSyains();
 					request.setAttribute("syains", list);
 				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backUp")){
-					forward = UPDATE_SYAIN;
-					syain = syainDAO.getSyainByCode(syain.getSyainCode());
-					request.setAttribute("syain", syain);
-				}
+			}
+			//更新画面、更新の動作
+			if(action.equals("update")) {
+				syainDAO.updateSyain(syain);
+				forward = LIST_SYAIN;
+				List<Syain> list = syainDAO.getAllSyains();
+				request.setAttribute("syains", list);
 			}
 		}
 		catch (SQLSyntaxErrorException e) {

@@ -8,7 +8,7 @@ import com.crud.app.model.Customer;
 
 public interface CustomerDAO {
 
-	int findCount(Customer customer);
+	int findCount(Customer customer)throws SQLSyntaxErrorException,SQLException;
 
 	void insertCustomer(Customer customer)throws SQLSyntaxErrorException,SQLException;
 

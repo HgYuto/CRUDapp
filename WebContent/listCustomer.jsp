@@ -61,7 +61,7 @@
    <th>取引先コード</th>
    <th>取引先名</th>
    <th>URL</th>
-   <th>支払いサイト</th>
+   <th>支払サイト</th>
   </tr>
   <tr>
     <td>
@@ -91,7 +91,7 @@
    <th id="cust_code">取引先コード</th>
    <th id="cust_name">取引先名</th>
    <th id="url">URL</th>
-   <th id="payment_site">支払いサイト</th>
+   <th id="payment_site">支払サイト</th>
   </tr>
  </thead>
  <tbody>

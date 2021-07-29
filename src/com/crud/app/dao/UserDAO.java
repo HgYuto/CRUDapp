@@ -22,5 +22,5 @@ public interface UserDAO {
 
 	List<User> searchUsers(User user);
 
-	User getUserByCode(String syain_code, String user_id);
+	User getUserByCode(String syain_code, String user_id)throws SQLSyntaxErrorException,SQLException;
 }

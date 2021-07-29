@@ -126,43 +126,29 @@ public class CustomerController extends HttpServlet {
 				}
 			}
 			//追加画面、追加の動作
-			if(action.equals("insert")||action.equals("backIn")) {
-				if(action.equals("insert")) {
-					int count = customerDAO.findCount(customer);
-					if(count > 0) {
-						forward = INSERT_CUSTOMER;
-						errM = "取引先コードが重複しています。再度見直してください。";
-					}
-					else if(count < 0) {
-						forward = INSERT_CUSTOMER;
-						errM = "接続エラー：ネットワーク不良";
-					}
-					else {
-						customerDAO.insertCustomer(customer);
-						forward = LIST_CUSTOMER;
-						List<Customer> list = customerDAO.getAllCustomers();
-						request.setAttribute("customers", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backIn")) {
+			if(action.equals("insert")) {
+				int count = customerDAO.findCount(customer);
+				if(count > 0) {
 					forward = INSERT_CUSTOMER;
+					errM = "取引先コードが重複しています。再度見直してください。";
 				}
-			}
-			//更新画面、更新の動作
-			if(action.equals("update")||action.equals("backUp")) {
-				if(action.equals("update")) {
-					customerDAO.updateCustomer(customer);
+				else if(count < 0) {
+					forward = INSERT_CUSTOMER;
+					errM = "接続エラー：ネットワーク不良";
+				}
+				else {
+					customerDAO.insertCustomer(customer);
 					forward = LIST_CUSTOMER;
 					List<Customer> list = customerDAO.getAllCustomers();
 					request.setAttribute("customers", list);
 				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backUp")){
-					forward = UPDATE_CUSTOMER;
-					customer = customerDAO.getCustomerByCode(customer.getCustCode());
-					request.setAttribute("customer", customer);
-				}
+			}
+			//更新画面、更新の動作
+			if(action.equals("update")) {
+				customerDAO.updateCustomer(customer);
+				forward = LIST_CUSTOMER;
+				List<Customer> list = customerDAO.getAllCustomers();
+				request.setAttribute("customers", list);
 			}
 		}
 		catch(SQLSyntaxErrorException e) {

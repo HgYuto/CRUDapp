@@ -22,29 +22,30 @@ function updateCheck() {
 
 	eMassage = eMassage.replace(/( |　|undefined)+/g, "");
 	if(eMassage == ""){
-		return inputUpdate();
+		inputUpdate();
 	}
 	else{
 		window.alert(eMassage);
-		return backUp();
 	}
 
 };
 
 function inputUpdate(){
-		var form = document.getElementById("form");
-		var ele= document.createElement("input");
-		ele.setAttribute("type","hidden");
-		ele.setAttribute("name","action");
-		ele.setAttribute("value","update");
-		return form.appendChild(ele);
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","update");
+	form.appendChild(ele);
+	document.form.submit();
 };
 
-function backUp(){
-			var form = document.getElementById("form");
-			var ele= document.createElement("input");
-			ele.setAttribute("type","hidden");
-			ele.setAttribute("name","action");
-			ele.setAttribute("value","backUp");
-			return form.appendChild(ele);
+function backList(){
+	var form = document.getElementById("form");
+	var ele= document.createElement("input");
+	ele.setAttribute("type","hidden");
+	ele.setAttribute("name","action");
+	ele.setAttribute("value","list");
+	form.appendChild(ele);
+	document.form.submit();
 };

@@ -17,7 +17,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	Connection connection = null;
 
-	public CustomerDAOImpl() throws FileNotFoundException, IOException,SQLException {
+	public CustomerDAOImpl() throws FileNotFoundException, IOException, SQLException {
 
 		try {
 			connection = DButil.getConnection();
@@ -31,7 +31,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	//取引先コードが重複しているか確認。
 	@Override
-	public int findCount(Customer customer) {
+	public int findCount(Customer customer)throws SQLSyntaxErrorException,SQLException {
 		try {
 			String sql = "SELECT COUNT(*) FROM M_CUSTOMER MC WHERE MC.CUST_CODE = ? ;";
 
