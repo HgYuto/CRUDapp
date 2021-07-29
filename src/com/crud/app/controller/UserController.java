@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ public class UserController extends HttpServlet {
 	String forward;
 	String result;
 	String errM ="";
+	String pattern = "";
 	UserDAO userDAO;
 	User user = new User();
 
@@ -103,20 +105,30 @@ public class UserController extends HttpServlet {
 			throws IOException, ServletException {
 		try {
 			request.setCharacterEncoding("UTF-8");
+			//エラー文リセット
+			errM = "";
 
 			user.setSyainCode(request.getParameter("syain_code"));
 			user.setUserId(request.getParameter("user_id"));
 			user.setPassword(request.getParameter("password"));
 			user.setPreUserId(request.getParameter("preUserId"));
 
-			//エラー文リセット
-			errM = "";
+			//正規表現
+			pattern = "[-0-9]+";
+			Pattern p = Pattern.compile(pattern);
 
 			if(request.getParameter("authority").isEmpty()) {
 				short authority = -1;
 				user.setAuthority(authority);
-			}else {
-				user.setAuthority(Short.valueOf(request.getParameter("authority")));
+			}
+			else if(!request.getParameter("authority").isEmpty()) {
+				if(p.matcher(request.getParameter("authority")).find()) {
+					user.setAuthority(Short.valueOf(request.getParameter("authority")));
+				}
+				else {
+					short authority = -1;
+					user.setAuthority(authority);
+				}
 			}
 
 			//ボタンを押した時の動作
