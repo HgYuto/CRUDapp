@@ -4,7 +4,7 @@ function mustCheck(name,id){
         return name + "を入力して下さい。\r\n";
     }
     else{
-        return" ";
+        return " ";
     }
 };
 
@@ -14,7 +14,7 @@ function lengthCheck(name,id,limitNo){
         return name + "に" + limitNo + "文字以内で入力してください。\r\n";
     }
     else{
-        return" ";
+        return " ";
     }
 };
 
@@ -42,7 +42,7 @@ function vanWordCheck(name,id){
 		return "\"'\*\(\)%\[\]^<>,は" + name + "に入力できません。\r\n";
 	}
 	else{
-		return" ";
+		return " ";
 	}
 };
 
@@ -53,7 +53,7 @@ function isNumHan(name,id){
     	return name + "に半角数字を入力して下さい。\r\n";
     }
      else {
-        return" ";
+        return " ";
     }
 };
 
@@ -63,14 +63,17 @@ function isAlpNumHan(name,id){
         return name + "に半角英数字または、「-」を入力して下さい。\r\n";
     }
      else {
-        return" ";
+        return " ";
     }
 };
 
 //指定文字列 メールアドレス用
 function isMailHan(name,id){
     if(id.value.match(/^(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$)/)){
-    	return" ";
+    	return " ";
+    }
+    else if(!id.value.trim()){
+    	return " ";
     }
      else {
         return name + "に入力出来るのは、半角英数字,「-」,「+」,「.」,「@」です。\r\n";
@@ -85,9 +88,4 @@ function isPoNum(name,id){
      else {
         return name + "に正数を入力して下さい。\r\n";
     }
-};
-
-//test用(白髭)
-function OutputTest(id){
-        return "テスト\r\n";
 };
