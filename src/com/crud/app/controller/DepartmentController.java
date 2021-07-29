@@ -68,7 +68,7 @@ public class DepartmentController extends HttpServlet {
 				if(action.equals("delete")) {
 					forward = LIST_DEPARTMENT;
 					department.setCustCode(cust_code);
-					department.setCustCode(dept_code);
+					department.setDeptCode(dept_code);
 					departmentDAO.deleteDepartment(department);
 					List<Department> list = departmentDAO.getAllDepartments();
 					request.setAttribute("departments", list);
@@ -134,43 +134,29 @@ public class DepartmentController extends HttpServlet {
 				}
 			}
 			//追加画面、追加の動作
-			if(action.equals("insert")||action.equals("backIn")) {
-				if(action.equals("insert")) {
-					int count = departmentDAO. findCount(department);
-					if(count > 0) {
-						forward = INSERT_DEPARTMENT;
-						errM = "取引先コードもしくは、部署コードが重複しています。再度見直してください。";
-					}
-					else if(count < 0) {
-						forward = INSERT_DEPARTMENT;
-						errM = "接続エラー：ネットワーク不良";
-					}
-					else {
-						departmentDAO.insertDepartment(department);
-						forward = LIST_DEPARTMENT;
-						List<Department> list = departmentDAO.getAllDepartments();
-						request.setAttribute("departments", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backIn")) {
+			if(action.equals("insert")) {
+				int count = departmentDAO. findCount(department);
+				if(count > 0) {
 					forward = INSERT_DEPARTMENT;
+					errM = "取引先コードもしくは、部署コードが重複しています。再度見直してください。";
 				}
-			}
-			//更新画面、更新の動作
-			if(action.equals("update")||action.equals("backUp")) {
-				if(action.equals("update")) {
-					departmentDAO.updateDepartment(department);
+				else if(count < 0) {
+					forward = INSERT_DEPARTMENT;
+					errM = "接続エラー：ネットワーク不良";
+				}
+				else {
+					departmentDAO.insertDepartment(department);
 					forward = LIST_DEPARTMENT;
 					List<Department> list = departmentDAO.getAllDepartments();
 					request.setAttribute("departments", list);
 				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backUp")){
-					forward = UPDATE_DEPARTMENT;
-					department = departmentDAO.getDepartmentByCode(department.getCustCode(),department.getDeptCode());
-					request.setAttribute("department", department);
-				}
+			}
+			//更新画面、更新の動作
+			if(action.equals("update")) {
+				departmentDAO.updateDepartment(department);
+				forward = LIST_DEPARTMENT;
+				List<Department> list = departmentDAO.getAllDepartments();
+				request.setAttribute("departments", list);
 			}
 		}
 		catch(SQLSyntaxErrorException e) {

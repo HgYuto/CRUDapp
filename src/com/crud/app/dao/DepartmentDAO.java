@@ -22,6 +22,6 @@ public interface DepartmentDAO {
 
 	List<Department> searchDepartments(Department department);
 
-	Department getDepartmentByCode(String cust_code, String dept_code);
+	Department getDepartmentByCode(String cust_code, String dept_code)throws SQLSyntaxErrorException,SQLException;
 
 }

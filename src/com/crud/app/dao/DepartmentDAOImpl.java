@@ -254,7 +254,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 		return departments;
 	}
 	@Override
-	public Department getDepartmentByCode(String cust_code,String dept_code) {
+	public Department getDepartmentByCode(String cust_code,String dept_code)throws SQLSyntaxErrorException,SQLException {
 
 		Department department = null;
 
@@ -276,7 +276,7 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 				department.setDeptName2(rs.getString(4));
 				department.setPostCode(rs.getString(5));
 				department.setAddress1(rs.getString(6));
-				department.setAddress1(rs.getString(7));
+				department.setAddress2(rs.getString(7));
 				department.setAddress3(rs.getString(8));
 				department.setTel(rs.getString(9));
 				department.setChargeName(rs.getString(10));
