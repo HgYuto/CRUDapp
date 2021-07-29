@@ -8,7 +8,7 @@ import com.crud.app.model.Hanyo;
 
 public interface HanyoDAO {
 
-	int findCount(Hanyo hanyo);
+	int findCount(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException;
 
 	void insertHanyo(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException;
 
@@ -20,14 +20,8 @@ public interface HanyoDAO {
 
 	List<Hanyo> searchHanyos(Hanyo hanyo);
 
-	Hanyo getHanyoByCode(String hanyo_code,String value_code);
+	Hanyo getHanyoByCode(String hanyo_code,String value_code)throws SQLSyntaxErrorException,SQLException;
 
 	String decisionWhere(String sql);
-
-	 String decisionSet(String sql);
-
-	String hanyoArraySet(Hanyo hanyo, int i, int j);
-
-	String hanyoWhere(String sql, Hanyo hanyo, int i, int j);
 
 }

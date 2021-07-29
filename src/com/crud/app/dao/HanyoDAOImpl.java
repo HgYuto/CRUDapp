@@ -29,7 +29,7 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 	//汎用コードが重複しているか確認。
 	@Override
-	public int findCount(Hanyo hanyo) {
+	public int findCount(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException {
 		try {
 			String sql = "SELECT COUNT(*) FROM M_HANYO MH WHERE MH.HANYO_CODE = ? AND MH.VALUE_CODE = ? ;";
 
@@ -77,22 +77,16 @@ public class HanyoDAOImpl implements HanyoDAO {
 	public void updateHanyo(Hanyo hanyo)throws SQLSyntaxErrorException,SQLException {
 
 		try {
-			String sql = "UPDATE M_HANYO ";
-			for(int i = 0 ; 3 > i ; i++) {
-				if(hanyoArraySet(hanyo,1,i).isEmpty()){
-					;
-				}else {
-					sql += decisionSet(sql) + hanyoArraySet(hanyo,0,i) + "= \"" + hanyoArraySet(hanyo,1,i) + "\"";
-				}
-			}
-			for(int i = 0 ; 3 > i ; i++) {
-				sql = hanyoWhere(sql,hanyo,2,i) ;
-			}
-
-			sql += ";";
+			String sql = "UPDATE M_HANYO SET VALUE_NAME = ? WHERE HANYO_CODE = ? AND VALUE_CODE = ?;";
 
 			PreparedStatement pst = connection.prepareStatement(sql);
+			//インデクス番号、値
+			pst.setString(1, hanyo.getValueName());
+			pst.setString(2, hanyo.getHanyoCode());
+			pst.setString(3, hanyo.getValueCode());
+
 			int res = pst.executeUpdate();
+
 			if (res > 0) {
 				System.out.println("更新成功");
 			}
@@ -170,14 +164,6 @@ public class HanyoDAOImpl implements HanyoDAO {
 			return " WHERE ";
 		}
 	}
-	@Override
-	public String decisionSet(String sql) {
-		if(sql.contains("SET")) {
-			return ",";
-		}else {
-			return "SET ";
-		}
-	}
 
 	@Override
 	public List<Hanyo> searchHanyos(Hanyo hanyo) {
@@ -186,8 +172,20 @@ public class HanyoDAOImpl implements HanyoDAO {
 
 		try {
 			String sql = "SELECT * FROM M_HANYO ";
-			for(int i = 0 ; 2 > i ; i++) {
-				hanyoWhere(sql,hanyo,1,i);
+
+			String hc = hanyo.getHanyoCode();
+			String vc = hanyo.getValueCode();
+			String vn = hanyo.getValueName();
+
+			String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn}};
+
+			for(int i = 0 ; h[1].length > i ; i++) {
+				if(h[1][i].isEmpty()){
+					;
+				}
+				else {
+					sql += decisionWhere(sql)+ h[0][i] + "= \"" + h[1][i] + "\"";
+				}
 			}
 
 			sql += ";";
@@ -216,7 +214,7 @@ public class HanyoDAOImpl implements HanyoDAO {
 	}
 
 	@Override
-	public Hanyo getHanyoByCode(String hanyo_code,String value_code) {
+	public Hanyo getHanyoByCode(String hanyo_code,String value_code)throws SQLSyntaxErrorException,SQLException {
 
 		Hanyo hanyo = null;
 
@@ -244,32 +242,6 @@ public class HanyoDAOImpl implements HanyoDAO {
 		}
 
 		return hanyo;
-	}
-
-	@Override
-	public String hanyoArraySet(Hanyo hanyo, int i, int j) {
-
-		String hc = hanyo.getHanyoCode();
-		String vc = hanyo.getValueCode();
-		String vn = hanyo.getValueName();
-
-		String oldhc = hanyo.getOldHanyoCode();
-		String oldvc = hanyo.getOldValueCode();
-		String oldvn = hanyo.getOldValueName();
-
-		String[][] h = {{"HANYO_CODE ","VALUE_CODE ","VALUE_NAME "},{hc,vc,vn},{oldhc,oldvc,oldvn}};
-		return h[i][j];
-	}
-
-	@Override
-	public String hanyoWhere( String sql, Hanyo hanyo, int i, int j) {
-		if(hanyoArraySet(hanyo,i,j).isEmpty()){
-			;
-		}else {
-			sql += decisionWhere(sql) + hanyoArraySet( hanyo, 0, j) + "= \"" + hanyoArraySet( hanyo, i, j) + "\"";
-		}
-
-		return sql;
 	}
 
 }

@@ -10,7 +10,7 @@
 	<title>汎用コードマスター管理(追加)</title>
 </head>
 <body>
-<form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" onsubmit = "return checkBottan()">
+<form id="form" name="form" action="/CRUDapp/HanyoController" method="POST">
 <input type="hidden" name="key" value=""/>
 <div id="f">
 <h1>汎用コードマスター管理画面(追加)</h1>
@@ -39,10 +39,10 @@
 <table>
 <tr>
  <td>
-  <input type="submit" id="insert" name="insert" value="追加" onclick = "form.key.value = 'insert'">
+  <button type="button" id="insert" name="insert" onclick = "inputCheck()">追加</button>
  </td>
  <td>
-  <input type="submit" id="list" name="list" value="戻る" onclick = "form.key.value = 'list'">
+  <button type="button" id="list" name="list" onclick = "backList()">戻る</button>
  </td>
 </tr>
 </table>

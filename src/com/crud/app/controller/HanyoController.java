@@ -107,14 +107,16 @@ public class HanyoController extends HttpServlet {
 			hanyo.setHanyoCode(request.getParameter("hanyo_code"));
 			hanyo.setValueCode(request.getParameter("value_code"));
 			hanyo.setValueName(request.getParameter("value_name"));
-			hanyo.setOldHanyoCode(request.getParameter("hanyoCode"));
-			hanyo.setOldValueCode(request.getParameter("valueCode"));
-			hanyo.setOldValueName(request.getParameter("valueName"));
+
+			Calendar cl = Calendar.getInstance();
+			System.out.println(cl.getTime());
 
 			//ボタンを押した時の動作
 			String action =request.getParameter("action");
-			Calendar cl = Calendar.getInstance();
-			System.out.println(cl.getTime());
+
+			//デバッグ　白髭 start
+			System.out.println(action);
+			//デバッグ　白髭 end
 
 			//エラー文リセット
 			errM = "";
@@ -132,61 +134,30 @@ public class HanyoController extends HttpServlet {
 				}
 			}
 			//追加画面、追加の動作
-			if(action.equals("insert")||action.equals("backIn")) {
-				if(action.equals("insert")) {
-					int count = hanyoDAO.findCount(hanyo);
-
-					if(count > 0) {
-						forward = INSERT_HANYO;
-						errM = "汎用コードと値コードが重複しています。再度見直してください。";
-					}
-					else if(count < 0) {
-						forward = INSERT_HANYO;
-						errM = "接続エラー：ネットワーク不良";
-					}
-					else {
-						hanyoDAO.insertHanyo(hanyo);
-						forward = LIST_HANYO;
-						List<Hanyo> list = hanyoDAO.getAllHanyos();
-						request.setAttribute("hanyos", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backIn")) {
+			if(action.equals("insert")) {
+				int count = hanyoDAO.findCount(hanyo);
+				if(count > 0) {
 					forward = INSERT_HANYO;
+					errM = "汎用コードと値コードが重複しています。再度見直してください。";
+				}
+				else if(count < 0) {
+					forward = INSERT_HANYO;
+					errM = "接続エラー：ネットワーク不良";
+				}
+				else {
+					hanyoDAO.insertHanyo(hanyo);
+					forward = LIST_HANYO;
+					List<Hanyo> list = hanyoDAO.getAllHanyos();
+					request.setAttribute("hanyos", list);
 				}
 			}
+
 			//更新画面、更新の動作
-			if(action.equals("update")||action.equals("backUp")) {
-				if(action.equals("update")) {
-					int count = hanyoDAO.findCount(hanyo);
-					if(count > 1) {
-						forward = UPDATE_HANYO;
-						errM = "汎用コードと値コードが重複しています。再度見直してください。";
-						hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
-						request.setAttribute("hanyo", hanyo);
-					}
-					else if(count <= 0) {
-						forward = UPDATE_HANYO;
-						errM = "接続エラー：ネットワーク不良";
-						hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
-						request.setAttribute("hanyo", hanyo);
-					}
-					hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
-					request.setAttribute("hanyo", hanyo);
-					}
-					else {
-						hanyoDAO.updateHanyo(hanyo);
-						forward = LIST_HANYO;
-						List<Hanyo> list = hanyoDAO.getAllHanyos();
-						request.setAttribute("hanyos", list);
-					}
-				}
-				//jspでエラーの場合の画面移動
-				if(action.equals("backUp")){
-					forward = UPDATE_HANYO;
-					hanyo = hanyoDAO.getHanyoByCode(hanyo.getHanyoCode(),hanyo.getValueCode());
-					request.setAttribute("hanyo", hanyo);
+			if(action.equals("update")) {
+					hanyoDAO.updateHanyo(hanyo);
+					forward = LIST_HANYO;
+					List<Hanyo> list = hanyoDAO.getAllHanyos();
+					request.setAttribute("hanyos", list);
 				}
 		}
 		catch (SQLSyntaxErrorException e) {

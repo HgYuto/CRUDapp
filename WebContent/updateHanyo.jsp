@@ -10,34 +10,21 @@
 	<title>汎用コードマスター管理(更新)</title>
 </head>
 <body>
-<script type="text/javascript">
-function backList(){
-	var form = document.getElementById("form");
-	var ele= document.createElement("input");
-	ele.setAttribute("type","hidden");
-	ele.setAttribute("name","action");
-	ele.setAttribute("value","list");
-	return form.appendChild(ele);
-};
-
-</script>
- <form id="form" name="form" action="/CRUDapp/HanyoController" method="POST" >
+ <form id="form" name="form" action="/CRUDapp/HanyoController" method="POST">
+<input type="hidden" name="key" value=""/>
  <div id="f">
  <h1>汎用コードマスター管理画面(更新)</h1>
- <input type="hidden" name="hanyoCode" value="${hanyo.hanyoCode}"/>
- <input type="hidden" name="valueCode" value="${hanyo.valueCode}"/>
- <input type="hidden" name="valueName" value="${hanyo.valueName}"/>
 <table>
   <tr>
     <th>汎用コード</th>
      <td>
-      <input type="text" value="${hanyo.hanyoCode}" name="hanyo_code" size="15" <c:out value="${hanyo.hanyoCode}" /> />
+      <input type="text" value="${hanyo.hanyoCode}" name="hanyo_code" id="gray" size="15" readonly />
      </td>
   </tr>
   <tr>
   <th>値コード</th>
      <td>
-      <input type="text" value="${hanyo.valueCode}" name="value_code" size="30" <c:out value="${hanyo.valueCode}" /> />
+      <input type="text" value="${hanyo.valueCode}" name="value_code" id="gray" size="30" readonly />
      </td>
   </tr>
   <tr>
@@ -52,10 +39,10 @@ function backList(){
 <table>
 <tr>
  <td>
-  <input type="submit" id="update" name="update" value="更新" onclick="updateCheck()">
+  <button type="button" id="update" name="update" onclick = "updateCheck()">更新</button>
  </td>
  <td>
-  <input type="submit" id="list" name="list" value="戻る" onclick="backList()">
+  <button type="button" id="list" name="list" onclick = "backList()">戻る</button>
  </td>
 </tr>
 </table>
