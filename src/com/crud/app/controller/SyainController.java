@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ public class SyainController extends HttpServlet {
 	String forward;
 	String result;
 	String errM = "";
+	String pattern = "";
 	SyainDAO syainDAO;
 	Syain syain = new Syain();
 
@@ -81,8 +83,6 @@ public class SyainController extends HttpServlet {
 			if(action.equals("face")) {
 				forward = INDEX;
 			}
-			RequestDispatcher view = request.getRequestDispatcher(forward);
-			view.forward(request, response);
 		}
 		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
@@ -106,13 +106,23 @@ public class SyainController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			//正規表現
+			pattern = "[-0-9]+";
+			Pattern p = Pattern.compile(pattern);
 
 			syain.setSyainCode(request.getParameter("syain_code"));
 			if(request.getParameter("position").isEmpty()) {
 				short position = -1;
 				syain.setPosition(position);
-			}else {
-				syain.setPosition(Short.valueOf(request.getParameter("position")));
+			}
+			else if(!request.getParameter("position").isEmpty()) {
+				if(p.matcher(request.getParameter("position")).find()) {
+					syain.setPosition(Short.valueOf(request.getParameter("position")));
+				}
+				else {
+					short position = -1;
+					syain.setPosition(position);
+				}
 			}
 			syain.setSyainName(request.getParameter("syain_name"));
 			syain.setMailAddress(request.getParameter("mail_address"));
