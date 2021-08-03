@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crud.app.dao.DepartmentDAO;
 import com.crud.app.dao.DepartmentDAOImpl;
 import com.crud.app.model.Department;
+import com.crud.app.util.DButil;
 
 @WebServlet("/DepartmentController")
 public class DepartmentController extends HttpServlet {
@@ -52,6 +53,7 @@ public class DepartmentController extends HttpServlet {
 			String action = request.getParameter("action");
 			//エラー文リセット
 			errM = "";
+			departmentDAO = new DepartmentDAOImpl();
 
 			if (action.equals("insertFace")) {
 				forward = INSERT_DEPARTMENT;
@@ -95,6 +97,7 @@ public class DepartmentController extends HttpServlet {
 			request.setAttribute("result", errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 
@@ -120,6 +123,7 @@ public class DepartmentController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			departmentDAO = new DepartmentDAOImpl();
 
 			//部署全体画面、検索の動作
 			if(action.equals("list")||action.equals("search")) {
@@ -171,6 +175,7 @@ public class DepartmentController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 

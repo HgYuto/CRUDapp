@@ -21,11 +21,10 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 		try {
 			connection = DButil.getConnection();
-
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
 			e.printStackTrace();
 			System.out.println("unconnection");
-
 		}
 	}
 
@@ -42,11 +41,11 @@ public class CustomerDAOImpl implements CustomerDAO {
 			rs.next();
 			return rs.getInt(1);
 
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
 		}
-
 	}
 
 	@Override
@@ -76,22 +75,11 @@ public class CustomerDAOImpl implements CustomerDAO {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-/*		finally {
-            try {
-                if (connection != null) {
-                    // データベースを切断
-                    connection.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-		}
-*/	}
+	}
 
 	@Override
 	public void updateCustomer(Customer customer)throws SQLSyntaxErrorException,SQLException  {
+		try {
 
 			String sql = "UPDATE M_CUSTOMER SET CUST_NAME = ? ,URL = ? ,PAYMENT_SITE = ? WHERE CUST_CODE = ? ;";
 
@@ -107,7 +95,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 			if (res > 0) {
 				System.out.println("更新成功");
 			}
-
+		}
+		catch (SQLSyntaxErrorException e) {
+			e.printStackTrace();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -116,6 +110,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 		try {
 
 			String sql = "DELETE FROM M_CUSTOMER WHERE CUST_CODE = ? ;";
+
+
 			PreparedStatement pst = connection.prepareStatement(sql);
 			pst.setString(1, customer.getCustCode());
 
@@ -142,6 +138,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 		try {
 			//取引先テーブル＋社員名
 			String sql = "SELECT * FROM M_CUSTOMER ";
+
 			PreparedStatement pst = connection.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 
@@ -155,15 +152,16 @@ public class CustomerDAOImpl implements CustomerDAO {
 				customer.setPaymentSite(rs.getString(4));
 
 				customers.add(customer);
+
 			}
 
-		} catch (SQLSyntaxErrorException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return customers;
 	}
 
@@ -214,13 +212,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 			}
 				System.out.println("検索成功");
 
-		} catch (SQLSyntaxErrorException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return customers;
 	}
 
@@ -247,13 +245,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 			}
 
-		} catch (SQLSyntaxErrorException e) {
+		}
+		catch (SQLSyntaxErrorException e) {
 			e.printStackTrace();
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return customer;
 	}
 

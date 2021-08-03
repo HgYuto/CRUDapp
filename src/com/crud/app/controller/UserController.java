@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crud.app.dao.UserDAO;
 import com.crud.app.dao.UserDAOImpl;
 import com.crud.app.model.User;
+import com.crud.app.util.DButil;
 
 @WebServlet("/UserController")
 public class UserController extends HttpServlet {
@@ -55,6 +56,7 @@ public class UserController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			userDAO = new UserDAOImpl();
 
 			if (action.equals("insertFace")) {
 				forward = INSERT_USER;
@@ -98,6 +100,7 @@ public class UserController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 
@@ -107,6 +110,7 @@ public class UserController extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			//エラー文リセット
 			errM = "";
+			userDAO = new UserDAOImpl();
 
 			user.setSyainCode(request.getParameter("syain_code"));
 			user.setUserId(request.getParameter("user_id"));
@@ -198,6 +202,7 @@ public class UserController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 

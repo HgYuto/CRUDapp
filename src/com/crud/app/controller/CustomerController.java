@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crud.app.dao.CustomerDAO;
 import com.crud.app.dao.CustomerDAOImpl;
 import com.crud.app.model.Customer;
+import com.crud.app.util.DButil;
 
 @WebServlet("/CustomerController")
 public class CustomerController extends HttpServlet {
@@ -53,6 +54,7 @@ public class CustomerController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			customerDAO = new CustomerDAOImpl();
 
 			if (action.equals("insertFace")) {
 				forward = INSERT_CUSTOMER;
@@ -94,6 +96,7 @@ public class CustomerController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 
@@ -112,6 +115,7 @@ public class CustomerController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			customerDAO = new CustomerDAOImpl();
 
 			//取引先全体画面に戻る、検索
 			if(action.equals("list")||action.equals("search")) {
@@ -163,6 +167,7 @@ public class CustomerController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 }

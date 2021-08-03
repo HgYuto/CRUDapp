@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crud.app.dao.SyainDAO;
 import com.crud.app.dao.SyainDAOImpl;
 import com.crud.app.model.Syain;
+import com.crud.app.util.DButil;
 
 @WebServlet("/SyainController")
 public class SyainController extends HttpServlet {
@@ -55,6 +56,7 @@ public class SyainController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			syainDAO = new SyainDAOImpl();
 
 			if (action.equals("insertFace")) {
 				forward = INSERT_SYAIN;
@@ -96,6 +98,7 @@ public class SyainController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 
@@ -106,6 +109,8 @@ public class SyainController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			syainDAO = new SyainDAOImpl();
+
 			//正規表現
 			pattern = "[-0-9]+";
 			Pattern p = Pattern.compile(pattern);
@@ -181,6 +186,7 @@ public class SyainController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 

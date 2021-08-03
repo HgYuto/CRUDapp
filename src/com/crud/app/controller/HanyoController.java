@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crud.app.dao.HanyoDAO;
 import com.crud.app.dao.HanyoDAOImpl;
 import com.crud.app.model.Hanyo;
+import com.crud.app.util.DButil;
 
 @WebServlet("/HanyoController")
 public class HanyoController extends HttpServlet {
@@ -53,6 +53,7 @@ public class HanyoController extends HttpServlet {
 
 			//エラー文リセット
 			errM = "";
+			hanyoDAO = new HanyoDAOImpl();
 
 			if (action.equals("insertFace")) {
 				forward = INSERT_HANYO;
@@ -96,6 +97,7 @@ public class HanyoController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 
@@ -108,18 +110,12 @@ public class HanyoController extends HttpServlet {
 			hanyo.setValueCode(request.getParameter("value_code"));
 			hanyo.setValueName(request.getParameter("value_name"));
 
-			Calendar cl = Calendar.getInstance();
-			System.out.println(cl.getTime());
-
 			//ボタンを押した時の動作
 			String action =request.getParameter("action");
 
-			//デバッグ　白髭 start
-			System.out.println(action);
-			//デバッグ　白髭 end
-
 			//エラー文リセット
 			errM = "";
+			hanyoDAO = new HanyoDAOImpl();
 
 			//汎用全体画面、検索の動作
 			if(action.equals("list")||action.equals("search")) {
@@ -172,6 +168,7 @@ public class HanyoController extends HttpServlet {
 			request.setAttribute("result",errM);
 			RequestDispatcher view = request.getRequestDispatcher(forward);
 			view.forward(request, response);
+			DButil.closeConnection();
 		}
 	}
 }
