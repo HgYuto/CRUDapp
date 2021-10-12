@@ -1,11 +1,17 @@
-#url{
+#omit{
 	width : 150px;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
 }
 
 #custT{
 	border-collapse : collapse;
 	border : solid 1px black;
-	width : 600px;
+	width: 100%;
+}
+table #radio{
+	text-align: center;
 }
 
 table #custT,#custT th,#custT td{
@@ -14,13 +20,6 @@ table #custT,#custT th,#custT td{
 	white-space : nowrap;
 	text-align: left;
 }
-
-#omit{
-	overflow : hidden;
-	text-overflow : ellipsis;
-	white-space : nowrap;
-}
-
 #cScroll{
 	overflow : scroll;
 	width : 600px;

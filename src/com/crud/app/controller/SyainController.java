@@ -112,7 +112,7 @@ public class SyainController extends HttpServlet {
 			syainDAO = new SyainDAOImpl();
 
 			//正規表現
-			pattern = "[-0-9]+";
+			pattern = "[0-9]+";
 			Pattern p = Pattern.compile(pattern);
 
 			syain.setSyainCode(request.getParameter("syain_code"));

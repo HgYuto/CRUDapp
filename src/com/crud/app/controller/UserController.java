@@ -118,7 +118,7 @@ public class UserController extends HttpServlet {
 			user.setPreUserId(request.getParameter("preUserId"));
 
 			//正規表現
-			pattern = "[-0-9]+";
+			pattern = "[0-9]+";
 			Pattern p = Pattern.compile(pattern);
 
 			if(request.getParameter("authority").isEmpty()) {

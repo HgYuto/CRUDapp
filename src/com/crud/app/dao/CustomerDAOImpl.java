@@ -12,15 +12,19 @@ import java.util.List;
 
 import com.crud.app.model.Customer;
 import com.crud.app.util.DButil;
+import com.crud.app.util.LogUtil;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
 	Connection connection = null;
+	LogUtil log = new LogUtil();
 
 	public CustomerDAOImpl() throws FileNotFoundException, IOException, SQLException {
 
 		try {
 			connection = DButil.getConnection();
+
+			log.infoLog("システム起動");
 		}
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
 			e.printStackTrace();
@@ -39,7 +43,9 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ResultSet rs = pst.executeQuery();
 
 			rs.next();
+			log.infoLog("取引先コード重複確認完了");
 			return rs.getInt(1);
+
 
 		}
 		catch (SQLException e) {
@@ -57,6 +63,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 			PreparedStatement pst = connection.prepareStatement(sql);
 
+
 			//インデクス番号、値
 			pst.setString(1, customer.getCustCode());
 			pst.setString(2, customer.getCustName());
@@ -66,6 +73,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 				int res = pst.executeUpdate();
 				if(res > 0) {
 					System.out.println("入力完了");
+					log.infoLog("取引先マスタ入力完了");
 				}
 
 		}
@@ -94,6 +102,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 			if (res > 0) {
 				System.out.println("更新成功");
+				log.infoLog("取引先マスタ更新完了");
+
 			}
 		}
 		catch (SQLSyntaxErrorException e) {
@@ -119,6 +129,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 			if (res > 0) {
 				System.out.println("削除完了");
+				log.infoLog("取引先マスタ削除完了");
 			}
 
 		}
@@ -154,6 +165,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 				customers.add(customer);
 
 			}
+			log.infoLog("取引先マスタ全データ取得完了");
 
 		}
 		catch (SQLSyntaxErrorException e) {
@@ -211,6 +223,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 				customers.add(customerCol);
 			}
 				System.out.println("検索成功");
+				log.infoLog("取引先マスタ検索完了");
 
 		}
 		catch (SQLSyntaxErrorException e) {
@@ -223,7 +236,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public Customer getCustomerByCode(String cust_code)throws SQLSyntaxErrorException,SQLException  {
+	public Customer getCustomerByCode(String cust_code) throws SQLSyntaxErrorException,SQLException {
 
 		Customer customer = null;
 

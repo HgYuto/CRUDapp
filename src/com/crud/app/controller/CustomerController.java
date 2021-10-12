@@ -7,6 +7,7 @@ import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -48,6 +49,12 @@ public class CustomerController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		try {
+			// アプリケーションスコープに保存された訪問回数を更新
+		    ServletContext application = this.getServletContext();
+		    Integer count = (Integer)application.getAttribute("count");
+		    count++;
+		    application.setAttribute("count", count);
+
 			request.setCharacterEncoding("UTF-8");
 			//表示画面からのパラメーターを取得
 			String action = request.getParameter("action");

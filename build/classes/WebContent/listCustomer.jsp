@@ -87,30 +87,30 @@
  <table id="custT">
  <thead>
   <tr>
-   <th id="radio"></th>
-   <th id="cust_code">取引先コード</th>
-   <th id="cust_name">取引先名</th>
-   <th id="url">URL</th>
-   <th id="payment_site">支払サイト</th>
+   <th id="radio"><p></p></th>
+   <th id="cust_code"><p>取引先コード</p></th>
+   <th id="cust_name"><p>取引先名</p></th>
+   <th id="url"><p>URL</p></th>
+   <th id="payment_site"><p>支払サイト</p></th>
   </tr>
  </thead>
  <tbody>
  <c:forEach items="${customers}" var="customer">
  <tr>
   <td id="radio">
-   <input type="radio" name="code" value="${customer.custCode}"/>
+   <p><input type="radio" name="code" value="${customer.custCode}"/></p>
   </td>
   <td>
-   <c:out value="${customer.custCode}" />
+   <p><c:out value="${customer.custCode}" /></p>
   </td>
   <td>
-   <c:out value="${customer.custName}" />
+   <p><c:out value="${customer.custName}" /></p>
   </td>
   <td>
-   <c:out value="${customer.url}" />
+   <p id="omit"><c:out value="${customer.url}" /></p>
   </td>
   <td>
-   <c:out value="${customer.paymentSite}" />
+   <p><c:out value="${customer.paymentSite}" /></p>
   </td>
  </tr>
   </c:forEach>
