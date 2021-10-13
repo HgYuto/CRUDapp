@@ -18,6 +18,7 @@ import com.crud.app.dao.CustomerDAO;
 import com.crud.app.dao.CustomerDAOImpl;
 import com.crud.app.model.Customer;
 import com.crud.app.util.DButil;
+import com.crud.app.util.LogUtil;
 
 @WebServlet("/CustomerController")
 public class CustomerController extends HttpServlet {
@@ -54,6 +55,7 @@ public class CustomerController extends HttpServlet {
 		    Integer count = (Integer)application.getAttribute("count");
 		    count++;
 		    application.setAttribute("count", count);
+		    LogUtil.initialized();
 
 			request.setCharacterEncoding("UTF-8");
 			//表示画面からのパラメーターを取得
@@ -90,6 +92,9 @@ public class CustomerController extends HttpServlet {
 			if(action.equals("face")) {
 				forward = INDEX;
 			}
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 		catch(SQLSyntaxErrorException e) {
 			e.printStackTrace();

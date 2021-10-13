@@ -12,6 +12,10 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class listener implements ServletContextListener {
 
+	//ログ設定プロパティファイルのファイル名
+	// protected static final String LOGGING_PROPERTIES= "C://project//workspace//CRUDapp/WebContent/WEB-INF/log4j.properties";
+	//static protected Logger log = Logger.getLogger( LogUtil.class );
+
     /**
      * Default constructor.
      */
@@ -32,7 +36,8 @@ public class listener implements ServletContextListener {
        */
       public void contextInitialized(ServletContextEvent sce)  {
 
-         // TODO Auto-generated method stub
+         try {
+    	 // TODO Auto-generated method stub
   		 ServletContext context = sce.getServletContext();
 
   		 Integer count = 0;
@@ -41,17 +46,12 @@ public class listener implements ServletContextListener {
 
 		System.out.println("LISTENNER通過...");
 
-  		 LogUtil.initialized("システム起動");
+		//LogUtil.initialized();
+		//properties = new Properties();
+		//properties.getProperty(LOGGING_PROPERTIES);
 
-
-
-
-
-
-  	 //properties = new Properties();
-  	 //properties.getProperty(LOGGING_PROPERTIES);
-
-  }
-
-
+         } catch(Exception e) {
+             e.printStackTrace();
+         }
+      }
 }
